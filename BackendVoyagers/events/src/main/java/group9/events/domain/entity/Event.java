@@ -1,0 +1,99 @@
+package group9.events.domain.entity;
+
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Entity
+@Table(name = "events")
+public class Event {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "title")
+    private String title;
+    @Column(name = "address_start")
+    private String addressStart;
+    @Column(name = "start_datetime")
+    private LocalDateTime startDateTime;
+
+    @Column(name = "address_end")
+    private String addressEnd;
+    @Column(name = "end_datetime")
+    private LocalDateTime endDateTime;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAddressStart() {
+        return addressStart;
+    }
+
+    public void setAddressStart(String adressStart) {
+        this.addressStart = adressStart;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public String getAddressEnd() {
+        return addressEnd;
+    }
+
+    public void setAddressEnd(String adressEnd) {
+        this.addressEnd = adressEnd;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equals(id, event.id) && Objects.equals(title, event.title) && Objects.equals(addressStart, event.addressStart) && Objects.equals(startDateTime, event.startDateTime) && Objects.equals(addressEnd, event.addressEnd) && Objects.equals(endDateTime, event.endDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, addressStart, startDateTime, addressEnd, endDateTime);
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", adressStart='" + addressStart + '\'' +
+                ", startDateTime=" + startDateTime +
+                ", adressEnd='" + addressEnd + '\'' +
+                ", endDateTime=" + endDateTime +
+                '}';
+    }
+}
