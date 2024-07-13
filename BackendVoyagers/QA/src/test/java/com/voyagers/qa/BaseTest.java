@@ -1,2 +1,4 @@
-package voyagers.qa;public class BaseTest {
+package com.voyagers.qa;
+
+public class BaseTest {
 }

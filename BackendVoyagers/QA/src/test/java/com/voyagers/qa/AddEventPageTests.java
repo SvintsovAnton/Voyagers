@@ -1,2 +1,4 @@
-package voyagers.qa;public class AddEventPageTests {
+package com.voyagers.qa;
+
+public class AddEventPageTests {
 }

@@ -1,2 +1,4 @@
-package model;public class Event {
+package model;
+
+public class Event {
 }

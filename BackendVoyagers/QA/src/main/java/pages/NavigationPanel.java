@@ -1,2 +1,4 @@
-package pages;public class NavigationPanel {
+package pages;
+
+public class NavigationPanel {
 }

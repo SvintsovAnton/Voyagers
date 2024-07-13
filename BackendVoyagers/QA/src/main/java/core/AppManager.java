@@ -1,2 +1,4 @@
-package core;public class AppManager {
+package core;
+
+public class AppManager {
 }

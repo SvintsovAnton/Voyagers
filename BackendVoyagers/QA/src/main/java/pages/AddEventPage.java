@@ -1,2 +1,4 @@
-package pages;public class AddEventPage {
+package pages;
+
+public class AddEventPage {
 }
