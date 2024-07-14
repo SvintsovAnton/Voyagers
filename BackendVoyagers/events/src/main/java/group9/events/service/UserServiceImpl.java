@@ -4,6 +4,8 @@ import group9.events.domain.entity.User;
 import group9.events.repository.UserRepository;
 import group9.events.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -20,6 +22,14 @@ public class UserServiceImpl implements UserService {
         this.repository = repository;
         this.encoder = encoder;
     }
+@Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return repository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(
+                        String.format("User %s not found", email))
+        );
+    }
+
 
     @Override
     public void register(User user) {
