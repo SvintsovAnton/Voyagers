@@ -3,10 +3,12 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+<changeSet id="add-tag-0.4.0" author="Anton">
+    <tagDatabase tag="v.0.4.0"/>
+</changeSet>
 
-    <include file="v.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.0.2.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.0.3.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.0.4.0/changelog.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-event-comments.xml" relativeToChangelogFile="true"/>
+    <include file="add-foreign-key-to-event-comments.xml" relativeToChangelogFile="true"/>
+
 
 </databaseChangeLog>
