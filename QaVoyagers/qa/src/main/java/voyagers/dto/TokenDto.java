@@ -1,2 +1,13 @@
-package voyagers.dto;public class TokenDto {
+package voyagers.dto;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@Builder
+public class TokenDto {
+    private String token;
 }
