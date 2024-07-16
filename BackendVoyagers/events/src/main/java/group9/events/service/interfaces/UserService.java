@@ -15,6 +15,7 @@ void login(User user);
 
 List<User> getAllUsers();
 
+void transferAdminRole(Long id);
 
-
+void blockUser(Long id);
 }
