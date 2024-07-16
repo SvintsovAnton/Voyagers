@@ -26,8 +26,8 @@ public class EventController {
     }
 
 //TODO проверить id
-@GetMapping("/event")
-public Event getInformationAboutEvent(@RequestParam Long id) {
+@GetMapping("/event/{id}")
+public Event getInformationAboutEvent(@PathVariable Long id) {
     return service.getInformationAboutEvent(id);
 }
 
@@ -37,11 +37,11 @@ public Event getInformationAboutEvent(@RequestParam Long id) {
     }
 
     @GetMapping("/{id}/comments")
-    public List<String> seeComments(@PathVariable Long id) {
+    public List<EventComments> seeComments(@PathVariable Long id) {
         return service.seeComments(id);
     }
     @PostMapping("/{eventId}/{userId}/comments")
-    public String writeComments(@PathVariable Long eventId,@PathVariable Long userId,  @RequestBody String comments) {
+    public EventComments writeComments(@PathVariable Long eventId,@PathVariable Long userId,  @RequestBody String comments) {
         return service.writeComments(eventId,userId,comments);
     }
 

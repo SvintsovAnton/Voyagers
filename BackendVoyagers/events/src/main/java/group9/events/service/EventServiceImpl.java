@@ -46,13 +46,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<String> seeComments(Long eventId) {
-        return eventCommentsRepository.findByEventId(eventId).stream().map(EventComments::getComments).collect(Collectors.toList());
+    public List<EventComments> seeComments(Long eventId) {
+        return eventCommentsRepository.findByEventId(eventId).stream().collect(Collectors.toList());
     }
 
     //TODO finalize exceptions
     @Override
-    public String writeComments(Long eventId, Long userId, String comments) {
+    public EventComments writeComments(Long eventId, Long userId, String comments) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new IllegalArgumentException("Event not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -65,10 +65,9 @@ public class EventServiceImpl implements EventService {
         eventComments.setUser(user);
         eventComments.setComments(comments);
         eventComments.setDateTime(LocalDateTime.now());
+        return  eventCommentsRepository.save(eventComments);
 
-        eventCommentsRepository.save(eventComments);
 
-        return comments;
     }
 
 
@@ -85,12 +84,14 @@ return null;
     }
 
     @Override
-    public void removeMyEvent(Long id) {
-         eventRepository.deleteById(id);
+    public Event removeMyEvent(Long id) {
+        Event event= getInformationAboutEvent(id);
+          eventRepository.deleteById(id);
+        return event;
     }
 
     @Override
-    public void changeEvent(Long id, Event newEvent) {
+    public Event changeEvent(Long id, Event newEvent) {
         Event altEvent = eventRepository.findById(id).orElse(null);
         if (altEvent!=null){
             altEvent.setTitle(newEvent.getTitle());
@@ -98,9 +99,9 @@ return null;
             altEvent.setStartDateTime(newEvent.getStartDateTime());
             altEvent.setAddressEnd(newEvent.getAddressEnd());
             altEvent.setEndDateTime(newEvent.getEndDateTime());
-            eventRepository.save(altEvent);
+           return eventRepository.save(altEvent);
         }
-
+return null;
     }
 
     @Override

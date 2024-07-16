@@ -30,13 +30,14 @@ public class SecurityConfig  {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authz -> authz
-                        // Разрешить доступ к эндпоинтам регистрации и авторизации
-                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
-                        // Другие эндпоинты требуют аутентификации
-                        .requestMatchers(HttpMethod.GET, "/events/active").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/events/archive").hasAnyRole("ADMIN","USER")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
+//                        // Разрешить доступ к эндпоинтам регистрации и авторизации
+//                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
+//                        // Другие эндпоинты требуют аутентификации
+//                        .requestMatchers(HttpMethod.GET, "/events/active").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/events/archive").hasAnyRole("ADMIN","USER")
+//                        .anyRequest().authenticated()
                 )
                 .build();
     }
