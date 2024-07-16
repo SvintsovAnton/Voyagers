@@ -1,6 +1,7 @@
 package group9.events.controller;
 
 import group9.events.domain.entity.Event;
+import group9.events.domain.entity.EventComments;
 import group9.events.service.EventServiceImpl;
 import group9.events.service.interfaces.EventService;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,8 @@ public class EventController {
     }
 
 //TODO проверить id
-@GetMapping("/event")
-public Event getInformationAboutEvent(@RequestParam Long id) {
+@GetMapping("/event/{id}")
+public Event getInformationAboutEvent(@PathVariable Long id) {
     return service.getInformationAboutEvent(id);
 }
 
@@ -36,17 +37,17 @@ public Event getInformationAboutEvent(@RequestParam Long id) {
     }
 
     @GetMapping("/{id}/comments")
-    public String seeComments(@PathVariable Long id) {
+    public List<EventComments> seeComments(@PathVariable Long id) {
         return service.seeComments(id);
     }
-    @PostMapping("/{id}/comments")
-    public String writeComments(@PathVariable Long id, @RequestBody String comments) {
-        return service.writeComments(comments);
+    @PostMapping("/{eventId}/{userId}/comments")
+    public EventComments writeComments(@PathVariable Long eventId,@PathVariable Long userId,  @RequestBody String comments) {
+        return service.writeComments(eventId,userId,comments);
     }
 
 
-    @GetMapping("/my") public List<Event> getMyPointsInEvent() {
-        return service.getMyPointsInEvent();
+    @GetMapping("/my/{id}") public List<Event> getMyPointsInEvent(@PathVariable Long userId) {
+        return service.getMyPointsInEvent(userId);
     }
 
 
@@ -66,6 +67,20 @@ public Event getInformationAboutEvent(@RequestParam Long id) {
     public void changeEvent(@PathVariable Long id, @RequestBody Event event) {
         service.changeEvent(id, event);
     }
+
+
+    @PostMapping("{eventId}/{userId}/apply")
+    public void applyEvent(@PathVariable Long eventId, @PathVariable Long userId){
+        service.applyEvent(eventId, userId);
+    }
+
+
+    @DeleteMapping("/{eventId}/{userId}/cancel")
+    public void cancelEventRequest(@PathVariable Long eventId, @PathVariable Long userId){
+        service.cancelEventRequest(eventId, userId);
+    }
+
+
 }
 
 

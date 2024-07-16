@@ -8,6 +8,16 @@ spring:
     driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:db/changelog/changelog-master.xml
+  jpa:
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+
+key:
+  access: JnqR7PGnOKXyikk3x974Utk15O9DH47rxLAbey1RNZU=
+  refresh: hEdhi2CrR5/hGKlhM+EszdR69/Q8l7xlqb8zlKE5WPU=
 
 server:
   port: 8080
+  servlet:
+    context-path: /api
