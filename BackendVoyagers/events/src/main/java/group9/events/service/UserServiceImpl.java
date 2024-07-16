@@ -34,7 +34,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void register(User user) {
       //  user.setPassword(encoder.encode(user.getPassword()));
+        user.setId(null);
+        user.setPassword(encoder.encode(user.getPassword()));
+        //TODO set roll
+        //TODO set active
         repository.save(user);
+
 
     }
     @Override
@@ -48,9 +53,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        return repository.findAll();
     }
 
+    @Override
+    public void transferAdminRole(Long id) {
 
+    }
+
+    @Override
+    public void blockUser(Long id) {
+
+    }
 
 }
