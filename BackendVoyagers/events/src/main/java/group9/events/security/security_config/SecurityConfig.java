@@ -38,8 +38,13 @@ public class SecurityConfig  {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authz -> authz
+
                         // Разрешить доступ к эндпоинтам регистрации и авторизации
+                        .requestMatchers(HttpMethod.GET,"/events/active").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/events/archive").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/events/{eventId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         // Другие эндпоинты требуют аутентификации
                         .requestMatchers(HttpMethod.GET, "/events/active").permitAll()
                         .requestMatchers(HttpMethod.GET, "/events/archive").hasAnyRole("ADMIN","USER")

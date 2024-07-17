@@ -1,5 +1,6 @@
 package group9.events.service;
 
+import group9.events.domain.dto.EventCommentsDto;
 import group9.events.domain.entity.Event;
 import group9.events.domain.entity.EventComments;
 import group9.events.domain.entity.EventUsers;
@@ -9,6 +10,10 @@ import group9.events.repository.EventRepository;
 import group9.events.repository.EventUsersRepository;
 import group9.events.repository.UserRepository;
 import group9.events.service.interfaces.EventService;
+import group9.events.service.mapping.EventCommentsMappingService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,11 +28,24 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final EventUsersRepository eventUsersRepository;
 
-    public EventServiceImpl(EventRepository eventRepository, EventCommentsRepository eventCommentsRepository, UserRepository userRepository, EventUsersRepository eventUsersRepository) {
+    private final EventCommentsMappingService eventCommentsMappingService;
+
+    public EventServiceImpl(EventRepository eventRepository, EventCommentsRepository eventCommentsRepository, UserRepository userRepository, EventUsersRepository eventUsersRepository, EventCommentsMappingService eventCommentsMappingService) {
         this.eventRepository = eventRepository;
         this.eventCommentsRepository = eventCommentsRepository;
         this.userRepository = userRepository;
         this.eventUsersRepository = eventUsersRepository;
+        this.eventCommentsMappingService = eventCommentsMappingService;
+    }
+
+    private User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication!=null){
+            String userName= authentication.getName();
+            User user = userRepository.findByEmail(userName).orElse(null);
+            return user;
+        }
+        return null;
     }
 
     @Override
@@ -46,13 +64,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventComments> seeComments(Long eventId) {
-        return eventCommentsRepository.findByEventId(eventId).stream().collect(Collectors.toList());
+    public List<EventCommentsDto> seeComments(Long eventId) {
+        return eventCommentsRepository.findByEventId(eventId).stream().
+                map(eventCommentsMappingService::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     //TODO finalize exceptions
     @Override
-    public EventComments writeComments(Long eventId, Long userId, String comments) {
+    public EventCommentsDto writeComments(Long eventId, Long userId, String comments) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new IllegalArgumentException("Event not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -65,7 +85,8 @@ public class EventServiceImpl implements EventService {
         eventComments.setUser(user);
         eventComments.setComments(comments);
         eventComments.setDateTime(LocalDateTime.now());
-        return  eventCommentsRepository.save(eventComments);
+        eventCommentsRepository.save(eventComments);
+        return eventCommentsMappingService.mapEntityToDto(eventComments);
 
 
     }
@@ -79,8 +100,16 @@ return null;
 
     @Override
     public Event createEvent(Event event) {
+
         event.setId(null);
-        return eventRepository.save(event);
+        eventRepository.save(event);
+        EventUsers eventUsers = new EventUsers();
+        eventUsers.setEvent(event);
+        User user = getCurrentUser();
+        eventUsers.setUser(user);
+        eventUsers.setUser(getCurrentUser());
+       eventUsersRepository.save(eventUsers);
+       return event;
     }
 
     @Override

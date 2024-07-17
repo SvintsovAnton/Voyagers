@@ -41,6 +41,14 @@ public class User implements UserDetails {
     )
     private Set<Role> roles;
 
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
+
+    @ManyToOne
+    @JoinColumn(name = "gender", nullable = false)
+    private Gender gender;
+
+
     public Long getId() {
         return id;
     }
@@ -86,6 +94,7 @@ public class User implements UserDetails {
         return roles;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -115,17 +124,41 @@ public class User implements UserDetails {
         this.photo = photo;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null ||                                          getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(dateOfBirth, user.dateOfBirth) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(phone, user.phone) && Objects.equals(photo, user.photo) && Objects.equals(roles, user.roles);
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(dateOfBirth, user.dateOfBirth) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(phone, user.phone) && Objects.equals(photo, user.photo) && Objects.equals(roles, user.roles) && Objects.equals(active, user.active) && Objects.equals(gender, user.gender);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, dateOfBirth, email, password, phone, photo, roles);
+        return Objects.hash(id, firstName, lastName, dateOfBirth, email, password, phone, photo, roles, active, gender);
     }
 
     @Override
@@ -136,8 +169,12 @@ public class User implements UserDetails {
                 ", lastName='" + lastName + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", photo='" + photo + '\'' +
+                ", roles=" + roles +
+                ", active=" + active +
+                ", gender=" + gender +
                 '}';
     }
 }
