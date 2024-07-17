@@ -1,5 +1,6 @@
 package group9.events.service.interfaces;
 
+import group9.events.domain.dto.EventCommentsDto;
 import group9.events.domain.entity.Event;
 import group9.events.domain.entity.EventComments;
 import group9.events.domain.entity.User;
@@ -15,8 +16,8 @@ public interface EventService {
 
     List<Event> getArchiveEvents();
 
-    List<EventComments> seeComments(Long eventId);
-    EventComments writeComments(Long eventId,Long userId, String comments);
+    List<EventCommentsDto> seeComments(Long eventId);
+    EventCommentsDto writeComments(Long eventId,Long userId, String comments);
 
     List<Event> getMyPointsInEvent(Long userId);
 

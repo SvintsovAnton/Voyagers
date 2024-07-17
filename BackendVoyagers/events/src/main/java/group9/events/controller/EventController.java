@@ -1,5 +1,6 @@
 package group9.events.controller;
 
+import group9.events.domain.dto.EventCommentsDto;
 import group9.events.domain.entity.Event;
 import group9.events.domain.entity.EventComments;
 import group9.events.service.EventServiceImpl;
@@ -14,11 +15,9 @@ public class EventController {
 
     private final EventService service;
 
-
     public EventController(EventService service) {
         this.service = service;
     }
-
 
     @GetMapping("/active")
     public List<Event> getActiveEvents() {
@@ -26,9 +25,9 @@ public class EventController {
     }
 
 //TODO проверить id
-@GetMapping("/event/{id}")
-public Event getInformationAboutEvent(@PathVariable Long id) {
-    return service.getInformationAboutEvent(id);
+@GetMapping("/{eventId}")
+public Event getInformationAboutEvent(@PathVariable Long eventId) {
+    return service.getInformationAboutEvent(eventId);
 }
 
     @GetMapping("/archive")
@@ -37,14 +36,13 @@ public Event getInformationAboutEvent(@PathVariable Long id) {
     }
 
     @GetMapping("/{id}/comments")
-    public List<EventComments> seeComments(@PathVariable Long id) {
+    public List<EventCommentsDto> seeComments(@PathVariable Long id) {
         return service.seeComments(id);
     }
     @PostMapping("/{eventId}/{userId}/comments")
-    public EventComments writeComments(@PathVariable Long eventId,@PathVariable Long userId,  @RequestBody String comments) {
-        return service.writeComments(eventId,userId,comments);
+    public EventCommentsDto writeComments(@PathVariable Long eventId,@PathVariable Long userId,@RequestBody EventCommentsDto commentsDto) {
+        return service.writeComments(eventId,userId,commentsDto.getComments());
     }
-
 
     @GetMapping("/my/{id}") public List<Event> getMyPointsInEvent(@PathVariable Long userId) {
         return service.getMyPointsInEvent(userId);
@@ -79,7 +77,6 @@ public Event getInformationAboutEvent(@PathVariable Long id) {
     public void cancelEventRequest(@PathVariable Long eventId, @PathVariable Long userId){
         service.cancelEventRequest(eventId, userId);
     }
-
 
 }
 
