@@ -1,7 +1,9 @@
 package group9.events.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -23,6 +25,12 @@ public class Event {
     private String addressEnd;
     @Column(name = "end_datetime")
     private LocalDateTime endDateTime;
+
+   @Column(name = "cost")
+   private BigDecimal cost;
+   @JsonProperty("maximal_number_of_participants")
+   @Column(name = "maximal_number_of_participants")
+    private Integer maximalNumberOfParticipants;
 
     public Long getId() {
         return id;
@@ -72,17 +80,33 @@ public class Event {
         this.endDateTime = endDateTime;
     }
 
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public Integer getMaximalNumberOfParticipants() {
+        return maximalNumberOfParticipants;
+    }
+
+    public void setMaximalNumberOfParticipants(Integer maximalNumberOfParticipants) {
+        this.maximalNumberOfParticipants = maximalNumberOfParticipants;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return Objects.equals(id, event.id) && Objects.equals(title, event.title) && Objects.equals(addressStart, event.addressStart) && Objects.equals(startDateTime, event.startDateTime) && Objects.equals(addressEnd, event.addressEnd) && Objects.equals(endDateTime, event.endDateTime);
+        return maximalNumberOfParticipants == event.maximalNumberOfParticipants && Objects.equals(id, event.id) && Objects.equals(title, event.title) && Objects.equals(addressStart, event.addressStart) && Objects.equals(startDateTime, event.startDateTime) && Objects.equals(addressEnd, event.addressEnd) && Objects.equals(endDateTime, event.endDateTime) && Objects.equals(cost, event.cost);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, addressStart, startDateTime, addressEnd, endDateTime);
+        return Objects.hash(id, title, addressStart, startDateTime, addressEnd, endDateTime, cost, maximalNumberOfParticipants);
     }
 
     @Override
@@ -90,10 +114,12 @@ public class Event {
         return "Event{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", adressStart='" + addressStart + '\'' +
+                ", addressStart='" + addressStart + '\'' +
                 ", startDateTime=" + startDateTime +
-                ", adressEnd='" + addressEnd + '\'' +
+                ", addressEnd='" + addressEnd + '\'' +
                 ", endDateTime=" + endDateTime +
+                ", cost=" + cost +
+                ", maximalNumberOfParticipants=" + maximalNumberOfParticipants +
                 '}';
     }
 }
