@@ -33,14 +33,14 @@ public class UserController {
         return service.getAllUsers();
     }
 
-    @PutMapping("/rolle/{id}")
-    public void transferAdminRole(@PathVariable Long id){
-        service.transferAdminRole(id);
+    @PutMapping("/role/{user_id}")
+    public void transferAdminRole(@PathVariable Long user_id){
+        service.transferAdminRole(user_id);
     }
 
-    @PutMapping("/{id}")
-    public void blockUser(@PathVariable Long id){
-        service.blockUser(id);
+    @PutMapping("/block/{user_id}")
+    public void blockUser(@PathVariable Long user_id){
+        service.blockUser(user_id);
     }
 
 }

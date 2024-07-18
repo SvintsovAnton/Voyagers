@@ -39,16 +39,16 @@ public class SecurityConfig  {
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authz -> authz
 
-                        // Разрешить доступ к эндпоинтам регистрации и авторизации
                         .requestMatchers(HttpMethod.GET,"/events/active").permitAll()
                         .requestMatchers(HttpMethod.GET,"/events/archive").permitAll()
                         .requestMatchers(HttpMethod.GET,"/events/{eventId}").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/events/{id}/comments").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
-                        // Другие эндпоинты требуют аутентификации
-                        .requestMatchers(HttpMethod.GET, "/events/active").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/events/archive").hasAnyRole("ADMIN","USER")
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
+                        .requestMatchers("/users/role/{user_id}").hasAnyRole("ADMIN")
+                        .requestMatchers("users/block/{user_id}").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .build();

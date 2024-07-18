@@ -17,9 +17,9 @@ public interface EventService {
     List<Event> getArchiveEvents();
 
     List<EventCommentsDto> seeComments(Long eventId);
-    EventCommentsDto writeComments(Long eventId,Long userId, String comments);
+    EventCommentsDto writeComments(Long eventId,String comments);
 
-    List<Event> getMyPointsInEvent(Long userId);
+    List<Event> getMyPointsInEvent();
 
     Event createEvent(Event event);
 
@@ -27,9 +27,9 @@ public interface EventService {
 
     Event changeEvent(Long id, Event newEvent);
 
-    void applyEvent(Long event_id, Long user_id);
+    void applyEvent(Long event_id);
 
-    void cancelEventRequest(Long event_id, Long user_id);
+    void cancelEventRequest(Long event_id);
 
 
 }

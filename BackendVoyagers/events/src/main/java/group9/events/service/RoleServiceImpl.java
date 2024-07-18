@@ -20,4 +20,10 @@ public class RoleServiceImpl implements RoleService {
         return repository.findByTitle("ROLE_USER").orElseThrow(
                 () -> new RuntimeException("Database doesn´t content ROLE_USER"));
     }
+
+    @Override
+    public Role getRoleAdmin() {
+        return repository.findByTitle("ROLE_ADMIN").orElseThrow(
+                () -> new RuntimeException("Database doesn´t content ROLE_ADMIN"));
+    }
 }

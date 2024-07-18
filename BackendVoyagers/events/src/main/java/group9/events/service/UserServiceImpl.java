@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return repository.findByEmail(email).orElseThrow(
@@ -43,11 +42,9 @@ public class UserServiceImpl implements UserService {
         );
     }
 
-
-
+//TODO Registration is not possible. Check if you are registered
     @Override
     public void register(User user) {
-      //  user.setPassword(encoder.encode(user.getPassword()));
         user.setId(null);
         user.setPassword(encoder.encode(user.getPassword()));
         Role userRole = roleService.getRoleUser();
@@ -60,6 +57,7 @@ public class UserServiceImpl implements UserService {
 
 
     }
+
     @Override
     public String confirmRegistration(String confirmCode) {
         return null;
@@ -76,12 +74,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void transferAdminRole(Long id) {
-
+        User user = repository.findById(id).orElse(null);
+        if (user != null) {
+           roleService.getRoleAdmin();
+        }
     }
 
     @Override
     public void blockUser(Long id) {
-
+        User user = repository.findById(id).orElse(null);
+        if (user != null) {
+            user.setActive(false);
+            repository.save(user);
+        }
     }
 
 }
