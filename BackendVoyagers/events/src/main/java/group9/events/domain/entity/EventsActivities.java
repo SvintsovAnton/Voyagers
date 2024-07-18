@@ -21,7 +21,7 @@ public class EventsActivities {
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
 
-    // Getters and setters
+
     public Long getId() {
         return id;
     }
