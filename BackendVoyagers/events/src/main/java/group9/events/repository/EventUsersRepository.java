@@ -12,4 +12,6 @@ public interface EventUsersRepository extends JpaRepository<EventUsers, Long> {
     Optional<List<EventUsers>> findEventUsersByEvent_Id(Long eventId);
 
     Optional<List<EventUsers>> findEventUsersByUser_Id(Long userId);
+
+    Optional<List<EventUsers>> findAllByEvent_IdAndUser_Id(Long eventId, Long userId);
 }

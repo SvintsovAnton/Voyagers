@@ -2,6 +2,7 @@ package group9.events.service;
 
 import group9.events.domain.dto.EventCommentsDto;
 import group9.events.domain.entity.*;
+import group9.events.exception_handler.exceptions.*;
 import group9.events.repository.*;
 import group9.events.service.interfaces.EventService;
 import group9.events.service.mapping.EventCommentsMappingService;
@@ -10,10 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +37,7 @@ public class EventServiceImpl implements EventService {
         this.eventCommentsMappingService = eventCommentsMappingService;
         this.roleForEventRepository = roleForEventRepository;
     }
-//TODO Exception No users online
+
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
@@ -44,41 +45,59 @@ public class EventServiceImpl implements EventService {
             User user = userRepository.findByEmail(userName).orElse(null);
             return user;
         }
-        return null;
+        throw new UserNotAuthenticatedException("User is not authenticated");
     }
-//TODO Exception There are no active events
+
     @Override
     public List<Event> getActiveEvents() {
-        return eventRepository.findByStartDateTimeAfter(LocalDateTime.now());
+        List<Event> listOfEvents = eventRepository.findByStartDateTimeAfter(LocalDateTime.now());
+        if (!listOfEvents.isEmpty()) {
+            return listOfEvents;
+        }
+        throw new ResourceNotFoundException("No active events found");
+
     }
 
-    //TODO The event does not exist
+
     @Override
     public Event getInformationAboutEvent(Long id) {
-        return eventRepository.findById(id).orElse(null);
+        Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+        return event;
+
+
     }
-    //TODO Exception There are no archive events
+
     @Override
     public List<Event> getArchiveEvents() {
-        return eventRepository.findByStartDateTimeBefore(LocalDateTime.now());
+        List<Event> listOfArchiveEvents = eventRepository.findByStartDateTimeBefore(LocalDateTime.now());
+        if (!listOfArchiveEvents.isEmpty()) {
+            return listOfArchiveEvents;
+        }
+        throw new ResourceNotFoundException("No archive events found");
     }
 
-    //TODO no comments
     @Override
     public List<EventCommentsDto> seeComments(Long eventId) {
-        return eventCommentsRepository.findByEventId(eventId).stream().
+        List<EventCommentsDto> listOfEventComments = eventCommentsRepository.findByEventId(eventId).stream().
                 map(eventCommentsMappingService::mapEntityToDto)
                 .collect(Collectors.toList());
+        if (listOfEventComments.isEmpty()) {
+            throw new ResourceNotFoundException("There are no comments yet");
+        }
+        return listOfEventComments;
     }
 
-    //TODO finalize exceptions
+
     @Override
     public EventCommentsDto writeComments(Long eventId, String comments) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new IllegalArgumentException("Event not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         User user = getCurrentUser();
 
         if (event.getEndDateTime().isAfter(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Event has not ended yet");
+            throw new EventNotEndedException("Event has not ended yet");
+        }
+        if (comments.isEmpty()) {
+            throw new EmptyCommentException("comment cannot be empty");
         }
 
         EventComments eventComments = new EventComments();
@@ -89,7 +108,6 @@ public class EventServiceImpl implements EventService {
         eventCommentsRepository.save(eventComments);
         return eventCommentsMappingService.mapEntityToDto(eventComments);
 
-
     }
 
 
@@ -97,14 +115,17 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> getMyPointsInEvent() {
         User user = getCurrentUser();
-        return eventUsersRepository.findEventUsersByUser_Id(user.getId()).orElse(null).stream().map(EventUsers::getEvent).toList();
+        return eventUsersRepository.findEventUsersByUser_Id(user.getId()).orElseThrow(() -> new ResourceNotFoundException("you don't have any events that you participate in")).stream().map(EventUsers::getEvent).toList();
+
     }
 
-    //TODO Exception event could not be created
+
     @Override
     public Event createEvent(Event event) {
-
         event.setId(null);
+        if (event == null) {
+            throw new ResourceNotFoundException("Event not created");
+        }
         eventRepository.save(event);
         EventUsers eventUsers = new EventUsers();
         eventUsers.setEvent(event);
@@ -120,37 +141,36 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event removeMyEvent(Long id) {
         User user = getCurrentUser();
-        List<EventUsers> listOfEventUsers = eventUsersRepository.findEventUsersByUser_Id(user.getId()).orElse(Collections.emptyList());
+        eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+        List<EventUsers> listOfEventUsers = eventUsersRepository.findEventUsersByUser_Id(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         EventUsers eventUsers = listOfEventUsers.stream()
-                .filter(x->x.getEvent().
-                        getId().equals(id)&&x.
+                .filter(x -> x.getEvent().
+                        getId().equals(id) && x.
                         getRoleForEvent().getTitle().equals("ROLE_OWNER"))
                 .findFirst().orElse(null);
 
         if (eventUsers != null) {
             Event event = getInformationAboutEvent(id);
             eventUsersRepository.delete(eventUsers);
-
-
-
-
             eventRepository.deleteById(id);
             return event;
         }
-        return null;
-        //TODO place for Exception
+        throw new AccessDeniedException("You can't delete events that don't belong to you");
+
     }
 
     //TODO An exception is when a user wants to change an application that he is not the owner of.
     @Override
     public Event changeEvent(Long id, Event newEvent) {
         User user = getCurrentUser();
-        List<EventUsers> listOfEventUsers = eventUsersRepository.findEventUsersByUser_Id(user.getId()).orElse(Collections.emptyList());
-EventUsers eventUsers = listOfEventUsers.stream()
-        .filter(x->x.getEvent().
-                getId().equals(id)&&x.
-                getRoleForEvent().getTitle().equals("ROLE_OWNER"))
-        .findFirst().orElse(null);
+        eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+        List<EventUsers> listOfEventUsers = eventUsersRepository.findEventUsersByUser_Id(user.getId()).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
+        EventUsers eventUsers = listOfEventUsers.stream()
+                .filter(x -> x.getEvent().
+                        getId().equals(id) && x.
+                        getRoleForEvent().getTitle().equals("ROLE_OWNER"))
+                .findFirst().orElse(null);
 
         if (eventUsers != null) {
             Event altEvent = eventRepository.findById(id).orElse(null);
@@ -163,36 +183,37 @@ EventUsers eventUsers = listOfEventUsers.stream()
                 return eventRepository.save(altEvent);
             }
         }
-
-        //TODO Place for Exception
-        throw new RuntimeException("User is not authorized to update this event.");
+        throw new AccessDeniedException("You can't change events that don't belong to you");
     }
 
-    //TODO Exception when the number of participants exceeds the maximum
+
     @Override
     public void applyEvent(Long eventId) {
-        Event event = eventRepository.getReferenceById(eventId);
-        if (eventUsersRepository.findEventUsersByEvent_Id(eventId).stream().count() < event.getMaximalNumberOfParticipants()) {
-            User user = getCurrentUser();
-            EventUsers eventUsers = new EventUsers();
-            eventUsers.setEvent(event);
-            eventUsers.setUser(user);
-            eventUsers.setRoleForEvent(roleForEventRepository.findByTitle("ROLE_PARTICIPANT").orElse(null));
-            if (eventUsers.getEvent() != null || eventUsers.getUser() != null) {
-                eventUsersRepository.save(eventUsers);
-            }
+        User user = getCurrentUser();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
+        List<EventUsers> oldUserEvents = eventUsersRepository.findAllByEvent_IdAndUser_Id(eventId, user.getId()).orElse(null);
+        if (!oldUserEvents.isEmpty()) {
+            throw new AlreadyRegisteredForEventException("You are already registered for this event.");
         }
-        // TODO Place for Exception
+
+        long participantCount = eventUsersRepository.findEventUsersByEvent_Id(eventId).stream().count();
+        if (participantCount >= event.getMaximalNumberOfParticipants()) {
+            throw new MaxParticipantsExceededException("The number of event participants has been exceeded");
+        }
+        EventUsers eventUsers = new EventUsers();
+        eventUsers.setEvent(event);
+        eventUsers.setUser(user);
+        eventUsers.setRoleForEvent(roleForEventRepository.findByTitle("ROLE_PARTICIPANT").orElseThrow(() -> new ResourceNotFoundException("Role not found")));
+
+        eventUsersRepository.save(eventUsers);
     }
 
-    //TODO Exception when a user wants to delete an application for which he has not registered
+
     @Override
     public void cancelEventRequest(Long eventId) {
         User user = getCurrentUser();
-        EventUsers eventUsers = eventUsersRepository.findByEvent_IdAndUser_Id(eventId, user.getId()).orElse(null);
-        if (eventUsers != null) {
-            eventUsersRepository.delete(eventUsers);
-        }
-// TODO Place for Exception
+        EventUsers eventUsers = eventUsersRepository.findByEvent_IdAndUser_Id(eventId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("You were not registered for this event"));
+        eventUsersRepository.delete(eventUsers);
     }
 }

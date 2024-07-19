@@ -51,7 +51,6 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(userRole));
         user.setActive(true);
         repository.save(user);
-
         Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
