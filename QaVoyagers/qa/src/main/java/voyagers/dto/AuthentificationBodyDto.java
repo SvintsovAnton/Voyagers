@@ -13,6 +13,5 @@ import lombok.ToString;
 //the same as RegistrationDto
 public class AuthentificationBodyDto {
     private String email;
-    private String username;
     private String password;
 }

@@ -1,6 +1,7 @@
 package voyagers.dto;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 public class EventDto {
     private Long id;
@@ -10,4 +11,7 @@ public class EventDto {
     private String addressEnd;
     private LocalDateTime endDateTime;
 
+    public Collection<Object> getEvents() {
+        return null;
+    }
 }

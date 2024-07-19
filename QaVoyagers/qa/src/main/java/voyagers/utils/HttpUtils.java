@@ -10,11 +10,18 @@ import java.util.Map;
 import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
+import static voyagers.utils.HttpUtils.HttpMethods.PUT;
+import static voyagers.utils.HttpUtils.HttpMethods.POST;
+import static voyagers.utils.HttpUtils.HttpMethods.GET;
+import static voyagers.utils.HttpUtils.HttpMethods.DELETE;
+import static voyagers.utils.HttpUtils.HttpMethods;
+import static voyagers.utils.Utils.isNullOrEmpty;
+
 
 public class HttpUtils {public static Properties properties = TestProperties.getINSTANCE().getProperties();
     public static final String LOGIN_ENDPOINT = properties.getProperty("login.endpoint");
-    public static final String REGISTRATION_ENDPOINT = properties.getProperty("registration.endpoint");
-    public static final String CONTACTS_ENDPOINT = properties.getProperty("contact.endpoint");
+    public static final String REGISTRATION_ENDPOINT = properties.getProperty("register.endpoint");
+    public static final String EVENTS_ENDPOINT = properties.getProperty("events.endpoint");
 
 
     public static <T> T postResponse(Object body, String endpoint, int statusCode, Class<T> responseClass) {
