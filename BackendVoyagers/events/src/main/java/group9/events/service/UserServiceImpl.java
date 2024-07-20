@@ -2,11 +2,14 @@ package group9.events.service;
 
 import group9.events.domain.entity.Role;
 import group9.events.domain.entity.User;
+import group9.events.exception_handler.exceptions.UserAlreadyExistsException;
+import group9.events.exception_handler.exceptions.UserNotFoundException;
 import group9.events.repository.RoleRepository;
 import group9.events.repository.UserRepository;
 import group9.events.service.interfaces.RoleService;
 import group9.events.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,23 +40,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return repository.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException(
-                        String.format("User %s not found", email))
-        );
+                () -> new UserNotFoundException("User with this name not found"));
     }
 
-//TODO Registration is not possible. Check if you are registered
+//TODO after Validation make Exception
     @Override
-    public void register(User user) {
+    public void register(User user) throws UserAlreadyExistsException {
         user.setId(null);
         user.setPassword(encoder.encode(user.getPassword()));
         Role userRole = roleService.getRoleUser();
         user.setRoles(Set.of(userRole));
         user.setActive(true);
-        repository.save(user);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        try {
+            repository.save(user);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (DataIntegrityViolationException exception){
+            throw new UserAlreadyExistsException("User with that name already exists");
+        }
 
     }
 

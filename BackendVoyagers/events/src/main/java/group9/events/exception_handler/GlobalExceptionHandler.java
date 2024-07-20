@@ -53,4 +53,33 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
+
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<Response> handleException(InvalidPasswordException e){
+        Response response = new Response(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Response> handleException(UserNotFoundException e){
+        Response response = new Response(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<Response> handleException(InvalidRefreshTokenException e){
+        Response response = new Response(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Response> handleException(UserAlreadyExistsException e){
+        Response response = new Response(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+
 }

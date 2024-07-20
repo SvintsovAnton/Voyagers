@@ -24,18 +24,18 @@ public class EventServiceImpl implements EventService {
     private final EventCommentsRepository eventCommentsRepository;
     private final UserRepository userRepository;
     private final EventUsersRepository eventUsersRepository;
-
     private final EventCommentsMappingService eventCommentsMappingService;
-
     private final RoleForEventRepository roleForEventRepository;
+    private final EventsActivitiesRepository eventsActivitiesRepository;
 
-    public EventServiceImpl(EventRepository eventRepository, EventCommentsRepository eventCommentsRepository, UserRepository userRepository, EventUsersRepository eventUsersRepository, EventCommentsMappingService eventCommentsMappingService, RoleForEventRepository roleForEventRepository) {
+    public EventServiceImpl(EventRepository eventRepository, EventCommentsRepository eventCommentsRepository, UserRepository userRepository, EventUsersRepository eventUsersRepository, EventCommentsMappingService eventCommentsMappingService, RoleForEventRepository roleForEventRepository, EventsActivitiesRepository eventsActivitiesRepository) {
         this.eventRepository = eventRepository;
         this.eventCommentsRepository = eventCommentsRepository;
         this.userRepository = userRepository;
         this.eventUsersRepository = eventUsersRepository;
         this.eventCommentsMappingService = eventCommentsMappingService;
         this.roleForEventRepository = roleForEventRepository;
+        this.eventsActivitiesRepository = eventsActivitiesRepository;
     }
 
     private User getCurrentUser() {
@@ -148,10 +148,20 @@ public class EventServiceImpl implements EventService {
                         getId().equals(id) && x.
                         getRoleForEvent().getTitle().equals("ROLE_OWNER"))
                 .findFirst().orElse(null);
-
         if (eventUsers != null) {
+            List<EventUsers> allEventUsersInEvent = eventUsersRepository.findEventUsersByEvent_Id(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+            eventUsersRepository.deleteAll(allEventUsersInEvent);
+
+            List<EventComments> allCommentsInEvent = eventCommentsRepository.findByEventId(id);
+            if (!allCommentsInEvent.isEmpty()){
+                eventCommentsRepository.deleteAll(allCommentsInEvent);
+            }
+            List<EventsActivities> allActivitesInEvent = eventsActivitiesRepository.findByEventId(id);
+            if (!allActivitesInEvent.isEmpty()){
+                eventsActivitiesRepository.deleteAll(allActivitesInEvent);
+            }
+
             Event event = getInformationAboutEvent(id);
-            eventUsersRepository.delete(eventUsers);
             eventRepository.deleteById(id);
             return event;
         }
@@ -214,6 +224,9 @@ public class EventServiceImpl implements EventService {
     public void cancelEventRequest(Long eventId) {
         User user = getCurrentUser();
         EventUsers eventUsers = eventUsersRepository.findByEvent_IdAndUser_Id(eventId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("You were not registered for this event"));
+        if (eventUsers.getRoleForEvent().equals(roleForEventRepository.findByTitle("ROLE_OWNER"))) {
+            throw new OwnerCannotCancelParticipationException("You cannot cancel participation in an event that you own. You need to delete the events");
+        }
         eventUsersRepository.delete(eventUsers);
     }
 }
