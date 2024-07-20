@@ -1,6 +1,8 @@
 package group9.events.security.sec_service;
 
 import group9.events.domain.entity.User;
+import group9.events.exception_handler.exceptions.InvalidPasswordException;
+import group9.events.exception_handler.exceptions.InvalidRefreshTokenException;
 import group9.events.security.sec_dto.TokenResponseDto;
 import group9.events.service.interfaces.UserService;
 import io.jsonwebtoken.Claims;
@@ -37,7 +39,7 @@ public class AuthService {
             refreshStorage.put(username, refreshToken);
             return new TokenResponseDto(accessToken, refreshToken);
         }
-        throw new AuthException("Password is incorrect");
+        throw new InvalidPasswordException("Password is incorrect");
     }
 
     public TokenResponseDto getNewAccessToken(String inboundRefreshToken) throws AuthException {
@@ -51,6 +53,6 @@ public class AuthService {
             return new TokenResponseDto(accessToken, null);
         }
 
-        throw new AuthException("Refresh token is incorrect");
+        throw new InvalidRefreshTokenException("Refresh token is incorrect");
     }
 }

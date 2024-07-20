@@ -1,4 +1,4 @@
-package group9.events.domain.entity;
+package group9.events.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -8,34 +8,25 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "events")
-public class Event {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+
+public class EventDto {
+
     private Long id;
-    @Column(name = "title")
+
     private String title;
-    @Column(name = "address_start")
+
     private String addressStart;
-    @Column(name = "start_datetime")
+
     private LocalDateTime startDateTime;
 
-    @Column(name = "address_end")
     private String addressEnd;
-    @Column(name = "end_datetime")
+
     private LocalDateTime endDateTime;
 
-   @Column(name = "cost")
-   private BigDecimal cost;
-   @JsonProperty("maximal_number_of_participants")
-   @Column(name = "maximal_number_of_participants")
+
+    private BigDecimal cost;
+
     private Integer maximalNumberOfParticipants;
-
-
-  @Column(name="active", nullable = false)
-   private boolean active;
 
     public Long getId() {
         return id;
@@ -57,8 +48,8 @@ public class Event {
         return addressStart;
     }
 
-    public void setAddressStart(String adressStart) {
-        this.addressStart = adressStart;
+    public void setAddressStart(String addressStart) {
+        this.addressStart = addressStart;
     }
 
     public LocalDateTime getStartDateTime() {
@@ -73,8 +64,8 @@ public class Event {
         return addressEnd;
     }
 
-    public void setAddressEnd(String adressEnd) {
-        this.addressEnd = adressEnd;
+    public void setAddressEnd(String addressEnd) {
+        this.addressEnd = addressEnd;
     }
 
     public LocalDateTime getEndDateTime() {
@@ -105,8 +96,8 @@ public class Event {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Event event = (Event) o;
-        return maximalNumberOfParticipants == event.maximalNumberOfParticipants && Objects.equals(id, event.id) && Objects.equals(title, event.title) && Objects.equals(addressStart, event.addressStart) && Objects.equals(startDateTime, event.startDateTime) && Objects.equals(addressEnd, event.addressEnd) && Objects.equals(endDateTime, event.endDateTime) && Objects.equals(cost, event.cost);
+        EventDto eventDto = (EventDto) o;
+        return Objects.equals(id, eventDto.id) && Objects.equals(title, eventDto.title) && Objects.equals(addressStart, eventDto.addressStart) && Objects.equals(startDateTime, eventDto.startDateTime) && Objects.equals(addressEnd, eventDto.addressEnd) && Objects.equals(endDateTime, eventDto.endDateTime) && Objects.equals(cost, eventDto.cost) && Objects.equals(maximalNumberOfParticipants, eventDto.maximalNumberOfParticipants);
     }
 
     @Override
@@ -116,7 +107,7 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
+        return "EventDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", addressStart='" + addressStart + '\'' +
@@ -128,3 +119,5 @@ public class Event {
                 '}';
     }
 }
+
+
