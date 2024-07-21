@@ -1,8 +1,8 @@
 spring:
   application:
-    name:Events
+    name: Events
   datasource:
-    url: jdbc:postgresql://§{DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -33,6 +33,3 @@ logging:
         security: DEBUG
     group9:
       events: DEBUG
-
-
-

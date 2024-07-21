@@ -3,13 +3,11 @@ package group9.events;
 import group9.events.domain.entity.Event;
 import group9.events.domain.entity.Role;
 import group9.events.domain.entity.User;
+import group9.events.repository.GenderRepository;
 import group9.events.repository.RoleRepository;
 import group9.events.repository.UserRepository;
 import group9.events.security.sec_dto.TokenResponseDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -19,8 +17,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,40 +31,59 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 class EventsApplicationTests {
 	@LocalServerPort
 	private int port;
 
 	@Autowired
 	private UserRepository userRepository;
-
 	@Autowired
 	private RoleRepository roleRepository;
-
+	@Autowired
+	private GenderRepository genderRepository;
 	private TestRestTemplate template;
-
 	private HttpHeaders headers;
-
 	private Event testEvent;
-
 	private String adminAccessToken;
-
 	private String userAccessToken;
 
 	private final String TEST_EVENT_TITLE = "Test event";
 	private final String TEST_ADMIN_NAME = "Test Admin";
 	private final String TEST_USER_NAME = "Test User";
+	private final String LAST_NAME_FOR_ALLE = "Test";
 	private final String TEST_PASSWORD = "Test password";
 	private final String ROLE_ADMIN_TITLE = "ROLE_ADMIN";
 	private final String ROLE_USER_TITLE = "ROLE_USER";
+	private final String EMAIL_FOR_USER = "user@test.com";
+	private final String EMAIL_FOR_ADMIN = "admin@test.com";
+	private final String GENDER_MALE="Male";
+	private final String GENDER_FEMALE = "Female";
+	private final Date DATE_OF_BIRTH;
+
+    {
+        try {
+            DATE_OF_BIRTH = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private final String PHONE ="+123456789";
+	private final String PFOTO = "example.com";
+
+
+
+
+
 
 	//Bearer 989gf89d8fg9fd8f9g8f9gf8d9gf8gf9gf8gdfg8g=ggrgt=9332frf
 	private final String BEARER_PREFIX= "Bearer ";
 
 	//константы префиксов
 	private final String URL_PREFIX = "http://localhost:";
-	private final String AUTH_RESOURCE_NAME="/auth";
-	private final String EVENT_RESOURCE_NAME = "/events";
+	private final String AUTH_RESOURCE_NAME="/api/auth";
+	private final String EVENT_RESOURCE_NAME = "/api/events";
 	private final String LOGIN_ENDPOINT = "/login";
 	private String ALL_ENDPOINT = "/all";
 
@@ -84,8 +105,8 @@ class EventsApplicationTests {
 		Role roleUser = null;
 
 		// Поиск тестового админа и пользователя в базе данных
-		User admin = userRepository.findBylastName(TEST_ADMIN_NAME).orElse(null);
-		User user = userRepository.findBylastName(TEST_USER_NAME).orElse(null);
+		User admin = userRepository.findFirstByLastName(TEST_ADMIN_NAME).orElse(null);
+		User user = userRepository.findFirstByLastName(TEST_USER_NAME).orElse(null);
 
 		// Проверка существования админа, если нет - создаем
 		if (admin == null) {
@@ -100,8 +121,14 @@ class EventsApplicationTests {
 			// Создание нового админа
 			admin = new User();
 			admin.setLastName(TEST_ADMIN_NAME);
+			admin.setFirstName(LAST_NAME_FOR_ALLE);
+			admin.setDateOfBirth(DATE_OF_BIRTH);
+			admin.setEmail(EMAIL_FOR_ADMIN);
 			admin.setPassword(encoder.encode(TEST_PASSWORD));
+			admin.setPhone(PHONE);
+			admin.setPhone(PFOTO);
 			admin.setRoles(Set.of(roleAdmin, roleUser));
+			admin.setGender(genderRepository.findByGender("Male"));
 			// Сохранение админа в базе данных
 			userRepository.save(admin);
 		}
@@ -116,8 +143,14 @@ class EventsApplicationTests {
 			// Создание нового пользователя
 			user = new User();
 			user.setLastName(TEST_USER_NAME);
+			user.setFirstName(LAST_NAME_FOR_ALLE);
+			user.setDateOfBirth(DATE_OF_BIRTH);
+			user.setEmail(EMAIL_FOR_USER);
 			user.setPassword(encoder.encode(TEST_PASSWORD));
+			user.setPhone(PHONE);
+			user.setPhone(PFOTO);
 			user.setRoles(Set.of(roleUser));
+			user.setGender(genderRepository.findByGender("Female"));
 			// Сохранение пользователя в базе данных
 			userRepository.save(user);
 		}
@@ -197,6 +230,7 @@ class EventsApplicationTests {
 	}
 
 	@Test
+	@Order(3)
 	void testCreateEventAsAdmin() {
 		headers.set("Authorization", adminAccessToken);
 		HttpEntity<Event> request = new HttpEntity<>(testEvent, headers);
@@ -210,6 +244,7 @@ class EventsApplicationTests {
 	}
 
 	@Test
+	@Order(1)
 	void testGetAllEventsAsUser() {
 		headers.set("Authorization", userAccessToken);
 		HttpEntity<String> request = new HttpEntity<>(headers);
@@ -220,6 +255,7 @@ class EventsApplicationTests {
 	}
 
 	@Test
+	@Order(2)
 	void testAccessControl() {
 		headers.set("Authorization", userAccessToken);
 		HttpEntity<Event> request = new HttpEntity<>(testEvent, headers);
@@ -235,6 +271,7 @@ class EventsApplicationTests {
 	}
 
 	@Test
+	@Order(4)
 	void testInvalidLogin() {
 		User invalidUser = new User();
 		invalidUser.setLastName("Invalid User");
@@ -248,6 +285,7 @@ class EventsApplicationTests {
 	}
 
 	@Test
+	@Order(5)
 	void testEventCreationWithMissingFields() {
 		headers.set("Authorization", adminAccessToken);
 		Event invalidEvent = new Event();
