@@ -22,6 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -97,6 +98,14 @@ class EventsApplicationTests {
 		// Создание и настройка тестового продукта
 		testEvent = new Event();
 		testEvent.setTitle(TEST_EVENT_TITLE);
+		testEvent.setAddressStart("Berlin"); // Убедитесь, что это поле не null
+		testEvent.setAddressEnd("München");
+		testEvent.setStartDateTime(LocalDateTime.now());
+		testEvent.setEndDateTime(LocalDateTime.now().plusDays(1));
+		testEvent.setCost(BigDecimal.valueOf(200));
+		testEvent.setMaximalNumberOfParticipants(5);
+
+
 
 
 		// Переменные для шифрования паролей и хранения ролей
@@ -226,10 +235,6 @@ class EventsApplicationTests {
 	}
 
 	@Test
-	void contextLoads() {
-	}
-
-	@Test
 	@Order(3)
 	void testCreateEventAsAdmin() {
 		headers.set("Authorization", adminAccessToken);
@@ -240,6 +245,8 @@ class EventsApplicationTests {
 		assertTrue(response.hasBody(), "Event creation response body is empty");
 		Event createdEvent = response.getBody();
 		assertNotNull(createdEvent, "Created event is null");
+		System.out.println("Expected: " + TEST_EVENT_TITLE);
+		System.out.println("Actual: " + createdEvent.getTitle());
 		assertEquals(TEST_EVENT_TITLE, createdEvent.getTitle(), "Event title does not match");
 	}
 
