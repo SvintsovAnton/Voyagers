@@ -1,11 +1,12 @@
 package group9.events.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.io.Serializable;
 import java.util.*;
 
 
@@ -19,17 +20,39 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Long id;
     @Column(name = "first_name")
+    @NotBlank(message = "First name cannot be blank")
     private String firstName;
     @Column(name = "last_name")
+    @NotBlank(message = "Last name cannot be blank")
     private String lastName;
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
     @Column(name = "email")
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email should be valid")
     private String email;
     @Column(name = "password")
+    @NotBlank(message = "Password cannot be blank")
+    @Pattern(
+            /*
+            Минимум 8 символов.
+            Хотя бы одна буква.
+            Хотя бы одна цифра.
+            Хотя бы один специальный символ из набора @$!%*?&.
+             */
+            regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            message = "Password must be at least 8 characters long, contain at least one letter, one number, and one special character"
+    )
     private String password;
+
     @Column(name = "phone")
+    @NotBlank(message = "Phone number cannot be blank")
+    @Pattern(
+            regexp = "^\\+\\d{10,15}$",
+            message = "Phone number must be valid and include country code (e.g., +1234567890)"
+    )
+
     private String phone;
     @Column(name = "photo")
     private String photo;

@@ -1,6 +1,8 @@
 package group9.events.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,16 +18,20 @@ public class EventComments {
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
+    @NotNull(message = "Event cannot be null")
     private Event event;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @NotNull(message = "User cannot be null")
     private User user;
 
     @Column(name = "date_time", nullable = false)
+    @NotNull(message = "Date and time cannot be null")
     private LocalDateTime dateTime;
 
     @Column(name ="comments", nullable = false)
+    @NotBlank(message = "Comment cannot be blank")
     private String comments;
 
     public Long getId() {
