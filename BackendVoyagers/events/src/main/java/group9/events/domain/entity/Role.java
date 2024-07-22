@@ -1,6 +1,7 @@
 package group9.events.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
@@ -13,7 +14,9 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "title")
+    @NotBlank(message = "Title cannot be blank")
     private String title;
 
     public Long getId() {

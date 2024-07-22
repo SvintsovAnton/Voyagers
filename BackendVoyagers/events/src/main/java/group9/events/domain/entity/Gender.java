@@ -1,6 +1,7 @@
 package group9.events.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ public class Gender {
     private Long id;
 
     @Column(name = "gender", nullable = false)
+    @NotBlank(message = "Gender cannot be blank")
     private String gender;
 
     public Long getId() {
