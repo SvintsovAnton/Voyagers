@@ -122,7 +122,7 @@ public class Event {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return maximalNumberOfParticipants == event.maximalNumberOfParticipants && Objects.equals(id, event.id) && Objects.equals(title, event.title) && Objects.equals(addressStart, event.addressStart) && Objects.equals(startDateTime, event.startDateTime) && Objects.equals(addressEnd, event.addressEnd) && Objects.equals(endDateTime, event.endDateTime) && Objects.equals(cost, event.cost);
+        return active == event.active && Objects.equals(id, event.id) && Objects.equals(title, event.title) && Objects.equals(addressStart, event.addressStart) && Objects.equals(startDateTime, event.startDateTime) && Objects.equals(addressEnd, event.addressEnd) && Objects.equals(endDateTime, event.endDateTime) && Objects.equals(cost, event.cost) && Objects.equals(maximalNumberOfParticipants, event.maximalNumberOfParticipants);
     }
 
     @Override
