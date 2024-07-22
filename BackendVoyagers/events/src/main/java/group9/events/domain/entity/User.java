@@ -65,7 +65,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @Column(name = "active", nullable = false)
-    private Boolean active = true;
+    private Boolean active;
 
     @ManyToOne
     @JoinColumn(name = "gender", nullable = false)

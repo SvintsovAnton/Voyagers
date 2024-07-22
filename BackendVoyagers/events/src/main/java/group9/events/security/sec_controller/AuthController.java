@@ -31,10 +31,6 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public TokenResponseDto getNewAccessToken(@RequestBody RefreshRequestDto request) {
-        try {
-            return service.getNewAccessToken(request.getRefreshToken());
-        } catch (AuthException e) {
-            throw new RuntimeException(e);
-        }
+        return service.getNewAccessToken(request.getRefreshToken());
     }
 }

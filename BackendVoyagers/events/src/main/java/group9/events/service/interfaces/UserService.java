@@ -12,13 +12,16 @@ public interface UserService extends UserDetailsService {
 
     void register(User user);
 
-String confirmRegistration(String confirmCode);
+    String confirmRegistration(String confirmCode);
 
-void login(User user);
+    void login(User user);
 
-List<User> getAllUsers();
+    List<User> getAllUsers();
 
-void transferAdminRole(Long id);
+    void transferAdminRole(Long id);
 
-void blockUser(Long id);
+    void blockUser(Long id);
+
+    void registrationConfirm(String code);
+
 }
