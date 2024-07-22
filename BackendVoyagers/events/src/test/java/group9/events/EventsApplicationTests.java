@@ -20,7 +20,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,13 +39,10 @@ class EventsApplicationTests {
 	private RoleRepository roleRepository;
 
 	private TestRestTemplate template;
-
 	private HttpHeaders headers;
-
 	private Event testEvent;
 
 	private String adminAccessToken;
-
 	private String userAccessToken;
 
 	private final String TEST_EVENT_TITLE = "Test event";
@@ -55,30 +51,24 @@ class EventsApplicationTests {
 	private final String TEST_PASSWORD = "Test password";
 	private final String ROLE_ADMIN_TITLE = "ROLE_ADMIN";
 	private final String ROLE_USER_TITLE = "ROLE_USER";
+	private final String BEARER_PREFIX = "Bearer ";
 
-	//Bearer 989gf89d8fg9fd8f9g8f9gf8d9gf8gf9gf8gdfg8g=ggrgt=9332frf
-	private final String BEARER_PREFIX= "Bearer ";
-
-	//константы префиксов
 	private final String URL_PREFIX = "http://localhost:";
-	private final String AUTH_RESOURCE_NAME="/auth";
+	private final String AUTH_RESOURCE_NAME = "/auth";
 	private final String EVENT_RESOURCE_NAME = "/events";
 	private final String LOGIN_ENDPOINT = "/login";
-	private String ALL_ENDPOINT = "/all";
+	private final String ALL_ENDPOINT = "/all";
 
 	@BeforeEach
 	public void setUp() {
 		// Инициализация шаблона для REST запросов
 		template = new TestRestTemplate();
-		// Инициализация заголовков HTTP запросов
 		headers = new HttpHeaders();
 
-		// Создание и настройка тестового продукта
+		// Создание и настройка тестового события
 		testEvent = new Event();
 		testEvent.setTitle(TEST_EVENT_TITLE);
 
-
-		// Переменные для шифрования паролей и хранения ролей
 		BCryptPasswordEncoder encoder = null;
 		Role roleAdmin;
 		Role roleUser = null;
@@ -90,106 +80,49 @@ class EventsApplicationTests {
 		// Проверка существования админа, если нет - создаем
 		if (admin == null) {
 			encoder = new BCryptPasswordEncoder();
-			// Получение ролей для админа
 			roleAdmin = roleRepository.findByTitle(ROLE_ADMIN_TITLE).orElseThrow(
 					() -> new RuntimeException("Role Admin is missing in the database")
 			);
 			roleUser = roleRepository.findByTitle(ROLE_USER_TITLE).orElseThrow(
 					() -> new RuntimeException("Role User is missing in the database")
 			);
-			// Создание нового админа
 			admin = new User();
 			admin.setLastName(TEST_ADMIN_NAME);
 			admin.setPassword(encoder.encode(TEST_PASSWORD));
 			admin.setRoles(Set.of(roleAdmin, roleUser));
-			// Сохранение админа в базе данных
 			userRepository.save(admin);
 		}
 
 		// Проверка существования пользователя, если нет - создаем
 		if (user == null) {
 			encoder = encoder == null ? new BCryptPasswordEncoder() : encoder;
-			// Получение роли для пользователя, если не была загружена ранее
 			roleUser = roleUser == null ? roleRepository.findByTitle(ROLE_USER_TITLE).orElseThrow(
 					() -> new RuntimeException("Role User is missing in the database")
 			) : roleUser;
-			// Создание нового пользователя
 			user = new User();
 			user.setLastName(TEST_USER_NAME);
 			user.setPassword(encoder.encode(TEST_PASSWORD));
 			user.setRoles(Set.of(roleUser));
-			// Сохранение пользователя в базе данных
 			userRepository.save(user);
 		}
 
-		// Логинимся
-		// Подготовка данных для логина. Сбрасываем пароли для админа и пользователя, а также обнуляем их роли, так как роли будут назначены на бэкенде.
-
+		// Логинимся как админ и пользователь
 		admin.setPassword(TEST_PASSWORD);
 		admin.setRoles(null);
 		user.setPassword(TEST_PASSWORD);
 		user.setRoles(null);
 
-// Составляем URL для запроса
-//Формируем полный URL для логина, объединяя URL_PREFIX, port, AUTH_RESOURCE_NAME и LOGIN_ENDPOINT.
 		String url = URL_PREFIX + port + AUTH_RESOURCE_NAME + LOGIN_ENDPOINT;
 
-// Формируем и отправляем запрос для админа
-//Создаем объект запроса с данными админа и заголовками, отправляем его с помощью template.exchange.
-//Описание:
-//HttpEntity<User>: Этот класс представляет собой обертку для HTTP-запроса, который может включать тело запроса и заголовки.
-//new HttpEntity<>(admin, headers): Мы создаем новый объект HttpEntity, передавая в него объект admin и заголовки headers.
-//Детали:
-//admin: Это объект типа User, содержащий информацию о пользователе-администраторе. Мы используем его для отправки данных пользователя в теле запроса.
-//headers: Это объект типа HttpHeaders, содержащий HTTP-заголовки для запроса. Он может включать такие заголовки, как Content-Type, Accept и другие.
-
-
-
 		HttpEntity<User> request = new HttpEntity<>(admin, headers);
-
-//Описание:
-//ResponseEntity<TokenResponseDto>: Этот класс представляет ответ HTTP-запроса, включая статус ответа, заголовки и тело ответа. Здесь он типизирован классом TokenResponseDto, что означает, //что тело ответа ожидается в виде объекта TokenResponseDto.
-//template.exchange(url, HttpMethod.POST, request, TokenResponseDto.class): Мы используем метод exchange объекта TestRestTemplate для отправки HTTP-запроса и получения ответа.
-//Детали:
-//url: URL, к которому отправляется запрос. В данном случае это URL для аутентификации.
-//HttpMethod.POST: Метод HTTP-запроса. Здесь мы используем метод POST для отправки данных.
-//request: Объект HttpEntity, содержащий тело запроса (данные пользователя admin) и заголовки.
-//TokenResponseDto.class: Класс, в который будет преобразовано тело ответа. Мы ожидаем, что сервер вернет объект типа TokenResponseDto, содержащий токены.
-
-
 		ResponseEntity<TokenResponseDto> response = template.exchange(url, HttpMethod.POST, request, TokenResponseDto.class);
-
-// Проверяем, что тело ответа не пустое. Убеждаемся, что ответ содержит тело с данными.
-//Описание:
-//assertTrue(response.hasBody(), "Auth response body is empty"): Проверка утверждения, что ответ содержит тело. Если тело ответа пустое, тест не пройдет, и будет выведено сообщение "Auth //response body is empty".
-//Детали:
-//response.hasBody(): Метод, который возвращает true, если ответ содержит тело, и false в противном случае.
-//"Auth response body is empty": Сообщение, которое будет выведено в случае провала утверждения.
-
 		assertTrue(response.hasBody(), "Auth response body is empty");
-
-// Сохраняем токен доступа для админа. Извлекаем токен доступа из ответа и сохраняем его в переменной adminAccessToken.
-//Описание:
-//adminAccessToken = BEARER_PREFIX + response.getBody().getAccessToken(): Сохранение токена доступа для админа в переменную adminAccessToken.
-//Детали:
-//BEARER_PREFIX: Префикс "Bearer ", который добавляется к токену для использования в заголовках авторизации.
-//response.getBody().getAccessToken(): Извлечение тела ответа и получение значения токена доступа.
-
-
 		adminAccessToken = BEARER_PREFIX + response.getBody().getAccessToken();
 
-// Формируем и отправляем запрос для пользователя.  Повторяем шаги для отправки запроса на логин, но уже с данными пользователя.
 		request = new HttpEntity<>(user, headers);
 		response = template.exchange(url, HttpMethod.POST, request, TokenResponseDto.class);
-
-// Проверяем, что тело ответа не пустое.  Убеждаемся, что ответ содержит тело с данными.
 		assertTrue(response.hasBody(), "Auth response body is empty");
-
-// Сохраняем токен доступа для пользователя. Извлекаем токен доступа из ответа и сохраняем его в переменной userAccessToken
 		userAccessToken = BEARER_PREFIX + response.getBody().getAccessToken();
-
-
-
 	}
 
 	@Test
