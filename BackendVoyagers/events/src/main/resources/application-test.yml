@@ -13,7 +13,7 @@ spring:
       hibernate:
         auto_quote_keyword: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
 
 key:

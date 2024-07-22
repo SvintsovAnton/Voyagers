@@ -1,17 +1,20 @@
 package group9.events.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
 @Entity
 @Table(name="roles_for_events") public class RoleForEvent {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 
     @Column(name = "title")
+    @NotBlank(message = "Title cannot be blank")
     private String title;
 
     public Long getId() {
