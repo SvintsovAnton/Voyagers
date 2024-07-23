@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -151,6 +152,7 @@ class EventControllerTest {
             admin.setPhone(PFOTO);
             admin.setRoles(Set.of(roleAdmin, roleUser));
             admin.setGender(genderRepository.findByGender(GENDER_MALE));
+            admin.setActive(true);
             userRepository.save(admin);
         }
 
@@ -169,6 +171,7 @@ class EventControllerTest {
             user.setPhoto(PFOTO);
             user.setRoles(Set.of(roleUser));
             user.setGender(genderRepository.findByGender(GENDER_FEMALE));
+            user.setActive(true);
             userRepository.save(user);
         }
 

@@ -1,5 +1,6 @@
 package group9.events.controller;
 
+import group9.events.domain.dto.UserDto;
 import group9.events.domain.entity.User;
 import group9.events.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,28 +20,23 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody User user) {
-        service.register(user);
-    }
-
-    @PostMapping("/login")
-    public void login(@RequestBody User user) {
-        service.login(user);
+    public UserDto register(@RequestBody User user) {
+        return service.register(user);
     }
 
     @GetMapping()
-    public List<User> getAllUsers(){
+    public List<UserDto> getAllUsers(){
         return service.getAllUsers();
     }
 
     @PutMapping("/role/{user_id}")
-    public void transferAdminRole(@PathVariable Long user_id){
-        service.transferAdminRole(user_id);
+    public UserDto transferAdminRole(@PathVariable Long user_id){
+        return service.transferAdminRole(user_id);
     }
 
     @PutMapping("/block/{user_id}")
-    public void blockUser(@PathVariable Long user_id){
-        service.blockUser(user_id);
+    public UserDto blockUser(@PathVariable Long user_id){
+        return service.blockUser(user_id);
     }
 
 }
