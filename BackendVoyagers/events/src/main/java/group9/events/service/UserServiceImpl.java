@@ -53,34 +53,20 @@ public class UserServiceImpl implements UserService {
 
     //TODO after Validation make Exception
     @Override
-    public void register(User user) {
-        String username = user.getUsername();
-        User existedUser = repository.findByEmail(username).orElse(null);
-
-        if (existedUser != null && existedUser.getActive()) {
-            throw new RuntimeException("User already exists");
+    public void register(User user) throws UserAlreadyExistsException {
+        user.setId(null);
+        user.setPassword(encoder.encode(user.getPassword()));
+        Role userRole = roleService.getRoleUser();
+        user.setRoles(Set.of(userRole));
+        user.setActive(false);
+        try{
+            repository.save(user);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            emailService.sendConfirmationEmail(user);
+        } catch (DataIntegrityViolationException exception){
+            throw new UserAlreadyExistsException("User with that name already exists");
         }
-
-        if (existedUser == null) {
-            existedUser = new User();
-            existedUser.setEmail(username);
-            existedUser.setRoles(Set.of(roleService.getRoleUser()));
-        }
-
-        existedUser.setPassword(encoder.encode(user.getPassword()));
-        existedUser.setEmail(user.getEmail());
-
-        repository.save(existedUser);
-        emailService.sendConfirmationEmail(existedUser);
-
-//        try {
-//            repository.save(user);
-//            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//        } catch (DataIntegrityViolationException exception) {
-//            throw new UserAlreadyExistsException("User with that name already exists");
-//        }
-
     }
 
     @Override

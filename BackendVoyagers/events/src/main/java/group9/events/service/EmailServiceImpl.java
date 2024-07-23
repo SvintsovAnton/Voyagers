@@ -40,11 +40,10 @@ public class EmailServiceImpl implements EmailService {
         String emailText = generateEmailText(user);
 
         try {
-            helper.setFrom("event6494@gmail.com");
+            helper.setFrom("eventvoyagers@gmail.com");
             helper.setTo(user.getEmail());
             helper.setSubject("Registration");
             helper.setText(emailText, true);
-
             sender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -55,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             Template template = mailConfig.getTemplate("confirm_reg_mail.ftlh");
             String code = confirmationService.generateConfirmationCode(user);
-            String url = "http://localhost:8080/register?code=" + code;
+            String url = "http://localhost:8080/api/register?code=" + code;
 
             Map<String, Object> templateMap = new HashMap<>();
             templateMap.put("name", user.getFirstName());

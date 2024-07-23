@@ -16,8 +16,8 @@ spring:
       ddl-auto: none
     show-sql: true
   mail:
-    username: event6494@gmail.com
-    password: UbL2TNQpDanpaobJ7kNc
+    username: eventvoyagers@gmail.com
+    password: tmjieabxsksdsrsl
     host: smtp.gmail.com
     port: 587
     properties:
