@@ -15,6 +15,21 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+  mail:
+    username: eventvoyagers@gmail.com
+    password: tmjieabxsksdsrsl
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            protocols: TLSv1.2
+            trust: smtp.gmail.com
 
 key:
   access: JnqR7PGnOKXyikk3x974Utk15O9DH47rxLAbey1RNZU=
