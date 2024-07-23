@@ -1,5 +1,6 @@
 package group9.events.service;
 
+import group9.events.domain.dto.UserDto;
 import group9.events.domain.entity.Role;
 import group9.events.domain.entity.User;
 import group9.events.exception_handler.exceptions.UserAlreadyExistsException;
@@ -10,6 +11,7 @@ import group9.events.service.interfaces.ConfirmationService;
 import group9.events.service.interfaces.EmailService;
 import group9.events.service.interfaces.RoleService;
 import group9.events.service.interfaces.UserService;
+import group9.events.service.mapping.UserMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,15 +34,20 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final RoleService roleService;
     private final ConfirmationService confirmationService;
+    private final UserMappingService userMappingService;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, RoleService roleService, EmailService emailService, BCryptPasswordEncoder encoder, ConfirmationService confirmationService) {
+    public UserServiceImpl(UserRepository repository, BCryptPasswordEncoder encoder, EmailService emailService, RoleService roleService, ConfirmationService confirmationService, UserMappingService userMappingService) {
         this.repository = repository;
-        this.roleService = roleService;
-        this.emailService = emailService;
         this.encoder = encoder;
+        this.emailService = emailService;
+        this.roleService = roleService;
         this.confirmationService = confirmationService;
+        this.userMappingService = userMappingService;
     }
+
+
+
 
 
     @Override
@@ -51,9 +58,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    //TODO after Validation make Exception
+
     @Override
-    public void register(User user) throws UserAlreadyExistsException {
+    public UserDto register(User user) throws UserAlreadyExistsException {
         user.setId(null);
         user.setPassword(encoder.encode(user.getPassword()));
         Role userRole = roleService.getRoleUser();
@@ -63,7 +70,9 @@ public class UserServiceImpl implements UserService {
             repository.save(user);
             Authentication authentication = new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            emailService.sendConfirmationEmail(user);
+          //  emailService.sendConfirmationEmail(user);
+            UserDto userDto = userMappingService.mapEntityToDto(user);
+            return userDto;
         } catch (DataIntegrityViolationException exception){
             throw new UserAlreadyExistsException("User with that name already exists");
         }
@@ -74,38 +83,34 @@ public class UserServiceImpl implements UserService {
     public void registrationConfirm(String code) {
         User user = confirmationService.getUserByConfirmationCode(code);
         user.setActive(true);
+
     }
 
 
     @Override
-    public String confirmRegistration(String confirmCode) {
-        return null;
+    public List<UserDto> getAllUsers() {
+        return repository.findAll().stream().map(x->userMappingService.mapEntityToDto(x)).toList();
     }
 
     @Override
-    public void login(User user) {
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return repository.findAll();
-    }
-
-    @Override
-    public void transferAdminRole(Long id) {
+    public UserDto transferAdminRole(Long id) {
         User user = repository.findById(id).orElse(null);
         if (user != null) {
             roleService.getRoleAdmin();
+            return userMappingService.mapEntityToDto(user);
         }
+        throw new UserNotFoundException("User is not found");
     }
 
     @Override
-    public void blockUser(Long id) {
+    public UserDto blockUser(Long id) {
         User user = repository.findById(id).orElse(null);
         if (user != null) {
             user.setActive(false);
             repository.save(user);
+            return userMappingService.mapEntityToDto(user);
         }
+        throw new UserNotFoundException("User is not found");
     }
 
 }
