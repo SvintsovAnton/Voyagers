@@ -1,10 +1,12 @@
 package group9.events.service;
 
 import group9.events.domain.dto.UserDto;
+import group9.events.domain.entity.EventUsers;
 import group9.events.domain.entity.Role;
 import group9.events.domain.entity.User;
 import group9.events.exception_handler.exceptions.UserAlreadyExistsException;
 import group9.events.exception_handler.exceptions.UserNotFoundException;
+import group9.events.repository.EventUsersRepository;
 import group9.events.repository.RoleRepository;
 import group9.events.repository.UserRepository;
 import group9.events.service.interfaces.ConfirmationService;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,16 +39,19 @@ public class UserServiceImpl implements UserService {
     private final ConfirmationService confirmationService;
     private final UserMappingService userMappingService;
 
+
+    private final EventUsersRepository eventUsersRepository;
+
     @Autowired
-    public UserServiceImpl(UserRepository repository, BCryptPasswordEncoder encoder, EmailService emailService, RoleService roleService, ConfirmationService confirmationService, UserMappingService userMappingService) {
+    public UserServiceImpl(UserRepository repository, BCryptPasswordEncoder encoder, EmailService emailService, RoleService roleService, ConfirmationService confirmationService, UserMappingService userMappingService, EventUsersRepository eventUsersRepository) {
         this.repository = repository;
         this.encoder = encoder;
         this.emailService = emailService;
         this.roleService = roleService;
         this.confirmationService = confirmationService;
         this.userMappingService = userMappingService;
+        this.eventUsersRepository = eventUsersRepository;
     }
-
 
 
 
@@ -64,8 +70,9 @@ public class UserServiceImpl implements UserService {
         user.setId(null);
         user.setPassword(encoder.encode(user.getPassword()));
         Role userRole = roleService.getRoleUser();
-        user.setRoles(Set.of(userRole));
-        user.setActive(false);
+        user.setRoles(Set.of(userRole,roleService.getRoleAdmin()));
+
+        user.setActive(true);
         try{
             repository.save(user);
             Authentication authentication = new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());
@@ -93,13 +100,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto transferAdminRole(Long id) {
-        User user = repository.findById(id).orElse(null);
-        if (user != null) {
-            roleService.getRoleAdmin();
+        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("User is not found"));
+
+            Role adminRole = roleService.getRoleAdmin();
+            Role userRole = roleService.getRoleUser();
+            Set<Role> updatedRoles = new HashSet<>();
+            updatedRoles.add(adminRole);
+            updatedRoles.add(userRole);
+            user.setRoles(updatedRoles);
+            user = repository.save(user);
             return userMappingService.mapEntityToDto(user);
-        }
-        throw new UserNotFoundException("User is not found");
     }
 
     @Override

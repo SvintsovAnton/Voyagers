@@ -51,7 +51,7 @@ public class Event {
 
 
     @Column(name = "active", nullable = false)
-    private boolean active;
+    private boolean active = true;
 
     public Long getId() {
         return id;

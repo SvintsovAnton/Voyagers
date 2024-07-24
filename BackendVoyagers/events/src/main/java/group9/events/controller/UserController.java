@@ -4,6 +4,7 @@ import group9.events.domain.dto.UserDto;
 import group9.events.domain.entity.User;
 import group9.events.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class UserController {
     }
 
     @PutMapping("/role/{user_id}")
+    @Transactional
     public UserDto transferAdminRole(@PathVariable Long user_id){
         return service.transferAdminRole(user_id);
     }

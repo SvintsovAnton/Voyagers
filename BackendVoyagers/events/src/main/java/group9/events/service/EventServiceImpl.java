@@ -190,6 +190,8 @@ public class EventServiceImpl implements EventService {
                 altEvent.setStartDateTime(newEvent.getStartDateTime());
                 altEvent.setAddressEnd(newEvent.getAddressEnd());
                 altEvent.setEndDateTime(newEvent.getEndDateTime());
+                altEvent.setCost(newEvent.getCost());
+                altEvent.setMaximalNumberOfParticipants(newEvent.getMaximalNumberOfParticipants());
                 return eventRepository.save(altEvent);
             }
         }

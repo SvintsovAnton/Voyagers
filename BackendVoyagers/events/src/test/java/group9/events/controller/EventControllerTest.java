@@ -81,12 +81,7 @@ class EventControllerTest {
     private final String PFOTO = "example.com";
 
 
-
-
-
     private final String BEARER_PREFIX= "Bearer ";
-
-
     private final String URL_PREFIX = "http://localhost:";
     private final String AUTH_RESOURCE_NAME="/api/auth";
     private final String EVENT_RESOURCE_NAME = "/api/events";
