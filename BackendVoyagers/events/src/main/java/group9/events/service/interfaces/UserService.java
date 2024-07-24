@@ -1,6 +1,7 @@
 package group9.events.service.interfaces;
 
 
+import group9.events.domain.dto.UserDto;
 import group9.events.domain.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,15 +11,15 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
-    void register(User user);
+    UserDto register(User user);
 
-String confirmRegistration(String confirmCode);
 
-void login(User user);
+    List<UserDto> getAllUsers();
 
-List<User> getAllUsers();
+    UserDto transferAdminRole(Long id);
 
-void transferAdminRole(Long id);
+    UserDto blockUser(Long id);
 
-void blockUser(Long id);
+    void registrationConfirm(String code);
+
 }

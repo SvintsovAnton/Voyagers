@@ -1,11 +1,12 @@
 package group9.events.security.sec_service;
 
 import group9.events.domain.entity.User;
+import group9.events.exception_handler.ConfirmationFailedException;
+
 import group9.events.security.sec_dto.TokenResponseDto;
 import group9.events.service.interfaces.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,39 +19,44 @@ public class AuthService {
     private UserService userService;
     private TokenService tokenService;
     private Map<String, String> refreshStorage;
-    private BCryptPasswordEncoder encoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    public AuthService(UserService userService, TokenService tokenService, BCryptPasswordEncoder encoder) {
+    public AuthService(UserService userService, TokenService tokenService, BCryptPasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.tokenService = tokenService;
+        this.passwordEncoder = passwordEncoder;
         this.refreshStorage = new HashMap<>();
-        this.encoder = encoder;
     }
 
     public TokenResponseDto login(User inboundUser) throws AuthException {
         String username = inboundUser.getUsername();
-        UserDetails foundUser = userService.loadUserByUsername(username);
+        User foundUser = (User) userService.loadUserByUsername(username);
 
-        if (encoder.matches(inboundUser.getPassword(), foundUser.getPassword())) {
+        if (!foundUser.getActive()) {
+            throw new ConfirmationFailedException("Your registration is not confirmed");
+        }
+
+        if (passwordEncoder.matches(inboundUser.getPassword(), foundUser.getPassword())) {
             String accessToken = tokenService.generateAccessToken(foundUser);
             String refreshToken = tokenService.generateRefreshToken(foundUser);
             refreshStorage.put(username, refreshToken);
             return new TokenResponseDto(accessToken, refreshToken);
+        } else {
+            throw new AuthException("Password is incorrect");
         }
-        throw new AuthException("Password is incorrect");
     }
 
-    public TokenResponseDto getNewAccessToken(String inboundRefreshToken) throws AuthException {
+    public TokenResponseDto getNewAccessToken(String inboundRefreshToken) {
         Claims refreshClaims = tokenService.getRefreshClaims(inboundRefreshToken);
         String username = refreshClaims.getSubject();
-        String foundRefreshToken = refreshStorage.get(username);
+        String savedRefreshToken = refreshStorage.get(username);
 
-        if (foundRefreshToken != null && foundRefreshToken.equals(inboundRefreshToken)) {
-            UserDetails foundUser = userService.loadUserByUsername(username);
-            String accessToken = tokenService.generateAccessToken(foundUser);
+        if (savedRefreshToken != null && savedRefreshToken.equals(inboundRefreshToken)) {
+            User user = (User) userService.loadUserByUsername(username);
+            String accessToken = tokenService.generateAccessToken(user);
             return new TokenResponseDto(accessToken, null);
+        } else {
+            return new TokenResponseDto(null, null);
         }
-
-        throw new AuthException("Refresh token is incorrect");
     }
 }

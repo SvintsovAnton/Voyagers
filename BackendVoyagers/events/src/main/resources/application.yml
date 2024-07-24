@@ -2,7 +2,7 @@ spring:
   application:
     name:Events
   datasource:
-    url: jdbc:postgresql://§{DB_HOST}:{DB_PORT}/{DB_NAME}
+    url: jdbc:postgresql://§{DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -12,6 +12,25 @@ spring:
     properties:
       hibernate:
         auto_quote_keyword: true
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  mail:
+    username: eventvoyagers@gmail.com
+    password: tmjieabxsksdsrsl
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            protocols: TLSv1.2
+            trust: smtp.gmail.com
+
 
 key:
   access: JnqR7PGnOKXyikk3x974Utk15O9DH47rxLAbey1RNZU=
@@ -19,3 +38,17 @@ key:
 
 server:
   port: 8080
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+    group9:
+      events: DEBUG
+
+
+

@@ -1,8 +1,7 @@
 package group9.events.controller;
 
+import group9.events.domain.dto.EventCommentsDto;
 import group9.events.domain.entity.Event;
-import group9.events.domain.entity.EventComments;
-import group9.events.service.EventServiceImpl;
 import group9.events.service.interfaces.EventService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,21 +13,19 @@ public class EventController {
 
     private final EventService service;
 
-
     public EventController(EventService service) {
         this.service = service;
     }
-
 
     @GetMapping("/active")
     public List<Event> getActiveEvents() {
         return service.getActiveEvents();
     }
 
-//TODO проверить id
-@GetMapping("/event")
-public Event getInformationAboutEvent(@RequestParam Long id) {
-    return service.getInformationAboutEvent(id);
+
+@GetMapping("/{eventId}")
+public Event getInformationAboutEvent(@PathVariable Long eventId) {
+    return service.getInformationAboutEvent(eventId);
 }
 
     @GetMapping("/archive")
@@ -37,17 +34,16 @@ public Event getInformationAboutEvent(@RequestParam Long id) {
     }
 
     @GetMapping("/{id}/comments")
-    public List<String> seeComments(@PathVariable Long id) {
+    public List<EventCommentsDto> seeComments(@PathVariable Long id) {
         return service.seeComments(id);
     }
-    @PostMapping("/{eventId}/{userId}/comments")
-    public String writeComments(@PathVariable Long eventId,@PathVariable Long userId,  @RequestBody String comments) {
-        return service.writeComments(eventId,userId,comments);
+    @PostMapping("/{eventId}/comments")
+    public EventCommentsDto writeComments(@PathVariable Long eventId,@RequestBody EventCommentsDto commentsDto) {
+        return service.writeComments(eventId,commentsDto.getComments());
     }
 
-
-    @GetMapping("/my/{id}") public List<Event> getMyPointsInEvent(@PathVariable Long userId) {
-        return service.getMyPointsInEvent(userId);
+    @GetMapping("/my") public List<Event> getMyPointsInEvent() {
+        return service.getMyPointsInEvent();
     }
 
 
@@ -58,28 +54,27 @@ public Event getInformationAboutEvent(@RequestParam Long id) {
 
 
     @DeleteMapping("/{id}")
-    public void removeMyEvent(@PathVariable Long id) {
-        service.removeMyEvent(id);
+    public Event removeMyEvent(@PathVariable Long id) {
+        return service.removeMyEvent(id);
     }
 
 
     @PutMapping("/{id}")
-    public void changeEvent(@PathVariable Long id, @RequestBody Event event) {
-        service.changeEvent(id, event);
+    public Event changeEvent(@PathVariable Long id, @RequestBody Event event) {
+        return service.changeEvent(id, event);
     }
 
 
-    @PostMapping("{eventId}/{userId}/apply")
-    public void applyEvent(@PathVariable Long eventId, @PathVariable Long userId){
-        service.applyEvent(eventId, userId);
+    @PostMapping("{eventId}/apply")
+    public void applyEvent(@PathVariable Long eventId){
+        service.applyEvent(eventId);
     }
 
 
-    @DeleteMapping("/{eventId}/{userId}/cancel")
-    public void cancelEventRequest(@PathVariable Long eventId, @PathVariable Long userId){
-        service.cancelEventRequest(eventId, userId);
+    @DeleteMapping("/{eventId}/cancel")
+    public void cancelEventRequest(@PathVariable Long eventId){
+        service.cancelEventRequest(eventId);
     }
-
 
 }
 

@@ -38,12 +38,19 @@ public class SecurityConfig  {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authz -> authz
-                        // Разрешить доступ к эндпоинтам регистрации и авторизации
+
+                        .requestMatchers(HttpMethod.GET,"/events/active").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/events/archive").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/events/{eventId}").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/events/{id}/comments").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
-                        // Другие эндпоинты требуют аутентификации
-                        .requestMatchers(HttpMethod.GET, "/events/active").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/events/archive").hasAnyRole("ADMIN","USER")
+                        .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
+                        .requestMatchers("/users/role/{user_id}").hasAnyRole("ADMIN")
+                        .requestMatchers("users/block/{user_id}").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
