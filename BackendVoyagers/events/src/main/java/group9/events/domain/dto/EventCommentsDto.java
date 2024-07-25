@@ -6,7 +6,8 @@ public class EventCommentsDto {
     private String comments;
     private String eventTitle;
 
-    public EventCommentsDto() {}
+    public EventCommentsDto() {
+    }
 
     public EventCommentsDto(String firstName, String lastName, String comments, String eventTitle) {
         this.firstName = firstName;

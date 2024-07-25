@@ -2,9 +2,9 @@ package group9.events.controller;
 
 import group9.events.domain.dto.UserDto;
 import group9.events.domain.entity.*;
+import group9.events.exception_handler.exceptions.UserNotFoundException;
 import group9.events.repository.*;
 import group9.events.security.sec_dto.TokenResponseDto;
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,21 +12,18 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("test")
+@ActiveProfiles("dev")
 class UserControllerTest {
 
     @LocalServerPort
@@ -45,9 +42,11 @@ class UserControllerTest {
 
     private TestRestTemplate template;
     private HttpHeaders headers;
-    private Event testEvent;
+
     private String adminAccessToken;
     private String userAccessToken;
+
+    private String userAccessToken2;
 
 
 
@@ -57,8 +56,9 @@ class UserControllerTest {
     private final String TEST_PASSWORD = "TestPasword!";
     private final String ROLE_ADMIN_TITLE = "ROLE_ADMIN";
     private final String ROLE_USER_TITLE = "ROLE_USER";
-    private final String EMAIL_FOR_USER = "usertest@test.com";
-    private final String EMAIL_FOR_ADMIN = "admintest@test.com";
+    private final String EMAIL_FOR_USER = "usertest1@test.com";
+    private final String EMAIL_FOR_USER2 = "usertest2@test.com";
+    private final String EMAIL_FOR_ADMIN = "admintest1@test.com";
     private final String GENDER_MALE="Male";
     private final String GENDER_FEMALE = "Female";
     private final Date DATE_OF_BIRTH;
@@ -85,21 +85,27 @@ class UserControllerTest {
     private final String USER_RESOURCE_NAME = "/api/users";
     private final String LOGIN_ENDPOINT = "/login";
 
-    private String BLOCK_ENDPOINT="/block";
+    private final String ROLE_ENDPOINT = "/role";
 
-    private String SLASH ="/";
+    private final String BLOCK_ENDPOINT="/block";
+
+    private final String SLASH ="/";
 
 
 
     static Long USER_ID;
+    static Long USER_ID2;
 
 
    static User user;
 
    static User admin;
 
+   static User user2;
+
    static Set<Role> roleForAdmin;
    static Set<Role> roleForUser;
+   static Set<Role> roleForUser2;
 
 
     @BeforeEach
@@ -108,7 +114,6 @@ class UserControllerTest {
         template = new TestRestTemplate();
         headers= new HttpHeaders();
 
-        testEvent = new Event();
 
         BCryptPasswordEncoder encoder = null;
         Role roleAdmin;
@@ -116,6 +121,7 @@ class UserControllerTest {
 
          admin = userRepository.findByEmail(EMAIL_FOR_ADMIN).orElse(null);
          user = userRepository.findByEmail(EMAIL_FOR_USER).orElse(null);
+         user2 =userRepository.findByEmail(EMAIL_FOR_USER2).orElse(null);
 
 
         if (admin == null) {
@@ -161,12 +167,36 @@ class UserControllerTest {
             userRepository.save(user);
         }
 
+        if (user2 == null) {
+            encoder = encoder == null ? new BCryptPasswordEncoder() : encoder;
+            roleUser = roleUser == null ? roleRepository.findByTitle(ROLE_USER_TITLE).orElseThrow(
+                    () -> new RuntimeException("Role User is missing in the database")
+            ) : roleUser;
+            user2 = new User();
+            user2.setLastName(TEST_USER_NAME);
+            user2.setFirstName(LAST_NAME_FOR_ALLE);
+            user2.setDateOfBirth(DATE_OF_BIRTH);
+            user2.setEmail(EMAIL_FOR_USER2);
+            user2.setPassword(encoder.encode(TEST_PASSWORD));
+            user2.setPhone(PHONE);
+            user2.setPhoto(PFOTO);
+            roleForUser2 = Set.of(roleUser);
+            user2.setRoles(roleForUser2);
+            user2.setGender(genderRepository.findByGender(GENDER_FEMALE));
+            user2.setActive(true);
+            userRepository.save(user2);
+        }
+
         USER_ID=userRepository.findByEmail(EMAIL_FOR_USER).get().getId();
+        USER_ID2=userRepository.findByEmail(EMAIL_FOR_USER2).get().getId();
 
         admin.setPassword(TEST_PASSWORD);
         admin.setRoles(null);
         user.setPassword(TEST_PASSWORD);
         user.setRoles(null);
+        user2.setPassword(TEST_PASSWORD);
+        user2.setRoles(null);
+
 
         String url = URL_PREFIX + port + AUTH_RESOURCE_NAME + LOGIN_ENDPOINT;
 
@@ -182,12 +212,18 @@ class UserControllerTest {
 
         assertTrue(response.hasBody(), "Auth response body is empty");
         userAccessToken = BEARER_PREFIX + response.getBody().getAccessToken();
+
+        request = new HttpEntity<>(user2, headers);
+        response = template.exchange(url, HttpMethod.POST, request, TokenResponseDto.class);
+
+        assertTrue(response.hasBody(), "Auth response body is empty");
+        userAccessToken2 = BEARER_PREFIX + response.getBody().getAccessToken();
     }
 
 
     @Test
     @Order(1)
-    void getAllUsers() {
+    void positiveGetAllUsersByAdmin() {
         String url = URL_PREFIX+port+USER_RESOURCE_NAME;
         headers.set("Authorization", adminAccessToken);
         HttpEntity<Void> request = new HttpEntity<>(headers);
@@ -196,8 +232,61 @@ class UserControllerTest {
         assertFalse(listOfUserDto.isEmpty());
     }
 
+
     @Test
     @Order(2)
+    void negativeGetAllUsersByUser(){
+        String url = URL_PREFIX+port+USER_RESOURCE_NAME;
+        headers.set("Authorization", userAccessToken2);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Void> response =  template.exchange(url,HttpMethod.GET,request,Void.class);
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
+    }
+
+    @Test
+    @Order(3)
+    void negativeTransferAdminRoleByUser(){
+        String url = URL_PREFIX+port+USER_RESOURCE_NAME+ROLE_ENDPOINT+SLASH+USER_ID;
+        headers.set("Authorization", userAccessToken2);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Void> response =  template.exchange(url,HttpMethod.GET,request,Void.class);
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
+    }
+
+    @Test
+    @Order(4)
+    void positiveTransferAdminRoleByUser(){
+        String url = URL_PREFIX+port+USER_RESOURCE_NAME+ROLE_ENDPOINT+SLASH+USER_ID;
+        headers.set("Authorization", adminAccessToken);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<UserDto> response =  template.exchange(url,HttpMethod.PUT,request,UserDto.class);
+        assertEquals(HttpStatus.OK,response.getStatusCode());
+        Set<Role> setOfRoles = userRepository.findByEmail(EMAIL_FOR_USER).get().getRoles();
+        Long count = setOfRoles.stream().filter(x->x.getTitle().equals("ROLE_ADMIN")).count();
+        assertEquals(1L,count);
+
+        Role roleUserForUpdate = roleRepository.findByTitle("ROLE_USER").orElseThrow(
+                () -> new RuntimeException("Role User is missing in the database"));
+        Set<Role> roleForUserForUpdate = Set.of(roleUserForUpdate);
+        User userUpdate = userRepository.findByEmail(EMAIL_FOR_USER).orElseThrow(()->new UserNotFoundException("User not found"));
+        userUpdate.setRoles(roleForUserForUpdate);
+        userRepository.save(userUpdate);
+
+    }
+
+
+    @Test
+    @Order(5)
+    void negativeBlockUserByUser(){
+        String url = URL_PREFIX+port+USER_RESOURCE_NAME+BLOCK_ENDPOINT+SLASH+USER_ID;
+        headers.set("Authorization", userAccessToken2);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<UserDto> response = template.exchange(url,HttpMethod.PUT,request, UserDto.class);
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
+    }
+
+    @Test
+    @Order(6)
     void blockUser() {
         String url = URL_PREFIX+port+USER_RESOURCE_NAME+BLOCK_ENDPOINT+SLASH+USER_ID;
         headers.set("Authorization", adminAccessToken);
@@ -205,5 +294,9 @@ class UserControllerTest {
         ResponseEntity<UserDto> response = template.exchange(url,HttpMethod.PUT,request, UserDto.class);
         assertTrue(response.getBody().getEmail().equals(EMAIL_FOR_USER));
         assertEquals(userRepository.findById(USER_ID).orElse(null).getActive(),false);
+
+        User userUpdate = userRepository.findByEmail(EMAIL_FOR_USER).orElseThrow(()->new UserNotFoundException("User not found"));
+        userUpdate.setActive(true);
+        userRepository.save(userUpdate);
     }
 }

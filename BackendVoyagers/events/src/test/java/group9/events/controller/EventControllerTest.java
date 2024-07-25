@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ActiveProfiles("test")
+@ActiveProfiles("digitalocean")
 class EventControllerTest {
 
     @LocalServerPort
@@ -86,15 +85,14 @@ class EventControllerTest {
     private final String AUTH_RESOURCE_NAME="/api/auth";
     private final String EVENT_RESOURCE_NAME = "/api/events";
     private final String LOGIN_ENDPOINT = "/login";
-    private String ALL_ENDPOINT = "/all";
-    private String ACTIVE_ENDPOINT="/active";
-    private String ARCHIVE_ENDPOINT="/archive";
-    private String ID_FOR_SEARCH_ENDPOINT ="/1";
-    private String SLASH ="/";
-    private String APPLAY_ENDPOINT = "/apply";
-    private String CANCEL_ENDPOINT ="/cancel";
-    private String MY_ENDPOINT= "/my";
-    private String COMMENTS_ENDPOINT = "/comments";
+
+    private final String ACTIVE_ENDPOINT="/active";
+    private final String ARCHIVE_ENDPOINT="/archive";
+    private final String SLASH ="/";
+    private final String APPLAY_ENDPOINT = "/apply";
+    private final String CANCEL_ENDPOINT ="/cancel";
+    private final String MY_ENDPOINT= "/my";
+    private final String COMMENTS_ENDPOINT = "/comments";
 
 
     private final String SET_ADDRESS_START ="Berlin";
@@ -194,36 +192,6 @@ class EventControllerTest {
     }
 
 
-    @Test
-    @Order(3)
-    public void positiveGettingAllActiveEventsWithoutAuthorization(){
-        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+ACTIVE_ENDPOINT;
-        HttpEntity<Void> request = new HttpEntity<>(headers);
-        ResponseEntity<Event[]> response = template.exchange(url, HttpMethod.GET, request, Event[].class);
-        assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
-        assertTrue(response.hasBody(), "Response doesn't have a body");
-    }
-
-
-    @Test
-    @Order(4)
-    public void positiveGettingAllArchiveEventsWithoutAuthorization(){
-        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+ARCHIVE_ENDPOINT;
-        HttpEntity<Void> request = new HttpEntity<>(headers);
-        ResponseEntity<Event[]> response = template.exchange(url, HttpMethod.GET, request, Event[].class);
-        assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
-        assertTrue(response.hasBody(), "Response doesn't have a body");
-    }
-
-    @Test
-    @Order(5)
-    public void positiveGettingEventByIdWithoutAuthorization(){
-        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER;
-        HttpEntity<Void> request = new HttpEntity<>(headers);
-        ResponseEntity<Event> response=template.exchange(url,HttpMethod.GET,request, Event.class);
-        assertEquals(HttpStatus.OK,response.getStatusCode(),"Response has unexpected status");
-        assertTrue(response.hasBody(),"Response doesn't have a body");
-    }
 
 
     @Test
@@ -244,8 +212,26 @@ class EventControllerTest {
         assertEquals(testEvent.getTitle(),response.getBody().getTitle());
     }
 
+
+
     @Test
     @Order(2)
+    public void negativeEventCreationWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME;
+        testEvent.setTitle(TEST_EVENT_TITLE_FOR_ADMIN);
+        testEvent.setAddressStart(SET_ADDRESS_START);
+        testEvent.setAddressEnd(SET_ADRESS_END);
+        testEvent.setStartDateTime(DATE_START_FOR_EVENT_ADMIN);
+        testEvent.setEndDateTime(DATE_END_FOR_EVENT_ADMIN);
+        testEvent.setCost(COST);
+        testEvent.setMaximalNumberOfParticipants(MAXIMAL_NUMBERS_FOR_EVENT);
+        HttpEntity<Event> request = new HttpEntity<>(testEvent, headers);
+        ResponseEntity<Event> response = template.exchange(url,HttpMethod.POST,request,Event.class);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "Response has unexpected status");
+    }
+
+    @Test
+    @Order(3)
     public void positiveEventCreationByUserWithAuthorization(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME;
         testEvent.setTitle(TEST_EVENT_TITLE_FOR_USER);
@@ -264,10 +250,55 @@ class EventControllerTest {
 
 
 
+    @Test
+    @Order(4)
+    public void positiveGettingAllActiveEventsWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+ACTIVE_ENDPOINT;
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Event[]> response = template.exchange(url, HttpMethod.GET, request, Event[].class);
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
+        assertTrue(response.hasBody(), "Response doesn't have a body");
+
+        Event[] events = response.getBody();
+        assertNotNull(events, "Events should not be null");
+    }
+
+
+    @Test
+    @Order(5)
+    public void positiveGettingAllArchiveEventsWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+ARCHIVE_ENDPOINT;
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Event[]> response = template.exchange(url, HttpMethod.GET, request, Event[].class);
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
+        assertTrue(response.hasBody(), "Response doesn't have a body");
+        Event[] events = response.getBody();
+        assertNotNull(events, "Events should not be null");
+    }
+
 
 
     @Test
     @Order(6)
+    public void positiveGettingEventByIdWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER;
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Event> response=template.exchange(url,HttpMethod.GET,request, Event.class);
+        assertEquals(HttpStatus.OK,response.getStatusCode(),"Response has unexpected status");
+        assertTrue(response.hasBody(),"Response doesn't have a body");
+    }
+
+    @Test
+    @Order(7)
+    public void negativeGettingEventWhichDoesNotExistByIdWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+100;
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Event> response=template.exchange(url,HttpMethod.GET,request, Event.class);
+        assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode(),"Response has unexpected status");
+    }
+
+    @Test
+    @Order(8)
     public void positiveEventChangingByUserWithAuthorization(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER;
         Event modifededEvent = new Event();
@@ -285,9 +316,44 @@ class EventControllerTest {
         assertEquals(modifededEvent.getTitle(),response.getBody().getTitle());
     }
 
+    @Test
+    @Order(9)
+    public void negativeEventChangingByUserWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER;
+        Event modifededEvent = new Event();
+        modifededEvent.setTitle(TEST_EVENT_CHANGING);
+        modifededEvent.setAddressStart(SET_ADDRESS_START);
+        modifededEvent.setAddressEnd(SET_ADRESS_END);
+        modifededEvent.setStartDateTime(DATE_START_FOR_EVENT_USER);
+        modifededEvent.setEndDateTime(DATE_END_FOR_EVENT_USER);
+        modifededEvent.setCost(COST);
+        modifededEvent.setMaximalNumberOfParticipants(MAXIMAL_NUMBERS_FOR_EVENT);
+        HttpEntity<Event> request = new HttpEntity<>(modifededEvent, headers);
+        ResponseEntity<Event> response = template.exchange(url,HttpMethod.PUT,request,Event.class);
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
+    }
 
     @Test
-    @Order(7)
+    @Order(10)
+    public void negativeNotExcistEventChangingByUserWithAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+100;
+        Event modifededEvent = new Event();
+        modifededEvent.setTitle(TEST_EVENT_CHANGING);
+        modifededEvent.setAddressStart(SET_ADDRESS_START);
+        modifededEvent.setAddressEnd(SET_ADRESS_END);
+        modifededEvent.setStartDateTime(DATE_START_FOR_EVENT_USER);
+        modifededEvent.setEndDateTime(DATE_END_FOR_EVENT_USER);
+        modifededEvent.setCost(COST);
+        modifededEvent.setMaximalNumberOfParticipants(MAXIMAL_NUMBERS_FOR_EVENT);
+         headers.set("Authorization", adminAccessToken);
+        HttpEntity<Event> request = new HttpEntity<>(modifededEvent, headers);
+        ResponseEntity<Event> response = template.exchange(url,HttpMethod.PUT,request,Event.class);
+        assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
+    }
+
+
+    @Test
+    @Order(11)
     public void positiveTestApplyInEvent(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN+APPLAY_ENDPOINT;
         headers.set("Authorization", userAccessToken);
@@ -299,11 +365,28 @@ class EventControllerTest {
         assertTrue(eventUsers!=null);
     }
 
-
+    @Test
+    @Order(12)
+    public void negativeTestApplyInOwnEvent(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN+APPLAY_ENDPOINT;
+        headers.set("Authorization", adminAccessToken);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Void> response = template.exchange(url,HttpMethod.POST,request,Void.class);
+        assertEquals(HttpStatus.CONFLICT,response.getStatusCode(),"Response has unexpected status");
+    }
 
     @Test
-    @Order(8)
-    public void positiveGetMyPointsInEventInEvent(){
+    @Order(13)
+    public void negativeTestApplyInEventWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN+APPLAY_ENDPOINT;
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Void> response = template.exchange(url,HttpMethod.POST,request,Void.class);
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode(),"Response has unexpected status");
+    }
+
+    @Test
+    @Order(14)
+    public void positiveGetMyPointsInEvent(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+MY_ENDPOINT;
         headers.set("Authorization", userAccessToken);
         HttpEntity<Void> request = new HttpEntity<>(headers);
@@ -312,13 +395,23 @@ class EventControllerTest {
                 .filter(x -> x.getId().equals(ID_EVENTS_CREATED_ADMIN))
                 .findFirst();
         assertTrue(eventOptional.isPresent());
+    }
 
+    @Test
+    @Order(15)
+    public void negativeGetMyPointsInEventWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+MY_ENDPOINT;
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Event[]> response = template.exchange(url,HttpMethod.GET,request,Event[].class);
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode(),"Response has unexpected status");
     }
 
 
 
+
+
     @Test
-    @Order(9)
+    @Order(16)
     public void positiveTestCancelInEvent(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN+CANCEL_ENDPOINT;
         headers.set("Authorization", userAccessToken);
@@ -331,7 +424,17 @@ class EventControllerTest {
     }
 
     @Test
-    @Order(10)
+    @Order(17)
+    public void negativeTestCancelInEventWhereNotRegistered(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER+CANCEL_ENDPOINT;
+        headers.set("Authorization", userAccessToken);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Void> response = template.exchange(url,HttpMethod.DELETE,request,Void.class);
+        assertEquals(HttpStatus.CONFLICT,response.getStatusCode(),"Response has unexpected status");
+    }
+
+    @Test
+    @Order(18)
     public void positiveWriteComments(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER+COMMENTS_ENDPOINT;
         headers.set("Authorization", adminAccessToken);
@@ -342,9 +445,33 @@ class EventControllerTest {
         assertEquals(response.getBody().getComments(),eventComments.getComments());
     }
 
+    @Test
+    @Order(19)
+    public void negativeWriteCommentsWithoutAuthorization(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER+COMMENTS_ENDPOINT;
+        EventComments eventComments = new EventComments();
+        eventComments.setComments(TEST_COMMENTS);
+        HttpEntity<EventComments> request = new HttpEntity<>(eventComments,headers);
+        ResponseEntity<EventCommentsDto> response =template.exchange(url,HttpMethod.POST,request,EventCommentsDto.class);
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
+    }
+
 
     @Test
-    @Order(11)
+    @Order(20)
+    public void negativeWriteCommentsInEventWhichNotEnded(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN+COMMENTS_ENDPOINT;
+        headers.set("Authorization", adminAccessToken);
+        EventComments eventComments = new EventComments();
+        eventComments.setComments(TEST_COMMENTS);
+        HttpEntity<EventComments> request = new HttpEntity<>(eventComments,headers);
+        ResponseEntity<EventCommentsDto> response =template.exchange(url,HttpMethod.POST,request,EventCommentsDto.class);
+        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+    }
+
+
+    @Test
+    @Order(21)
     public void seeCommentsWithoutRegistration(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER+COMMENTS_ENDPOINT;
         HttpEntity<Void> request = new HttpEntity<>(headers);
@@ -354,7 +481,7 @@ class EventControllerTest {
     }
 
     @Test
-    @Order(12)
+    @Order(22)
     public void positiveRemoveEventByUser(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER;
         headers.set("Authorization", userAccessToken);
@@ -364,7 +491,26 @@ class EventControllerTest {
         assertEquals(response.getBody().getId(),ID_EVENTS_CREATED_USER);
     }
 
-    
 
+    @Test
+    @Order(23)
+    public void negativeRemoveEventByUserNotOwner(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN;
+        headers.set("Authorization", userAccessToken);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Event> response=template.exchange(url,HttpMethod.DELETE,request, Event.class);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "Response has unexpected status");
+    }
+
+    @Test
+    @Order(24)
+    public void positiveRemoveEventByAdmin(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN;
+        headers.set("Authorization", adminAccessToken);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Event> response=template.exchange(url,HttpMethod.DELETE,request, Event.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
+        assertEquals(response.getBody().getId(),ID_EVENTS_CREATED_ADMIN);
+    }
 
 }

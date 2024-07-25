@@ -22,11 +22,10 @@ public class EventController {
         return service.getActiveEvents();
     }
 
-
-@GetMapping("/{eventId}")
-public Event getInformationAboutEvent(@PathVariable Long eventId) {
-    return service.getInformationAboutEvent(eventId);
-}
+    @GetMapping("/{eventId}")
+    public Event getInformationAboutEvent(@PathVariable Long eventId) {
+        return service.getInformationAboutEvent(eventId);
+    }
 
     @GetMapping("/archive")
     public List<Event> getArchiveEvents() {
@@ -37,42 +36,39 @@ public Event getInformationAboutEvent(@PathVariable Long eventId) {
     public List<EventCommentsDto> seeComments(@PathVariable Long id) {
         return service.seeComments(id);
     }
+
     @PostMapping("/{eventId}/comments")
-    public EventCommentsDto writeComments(@PathVariable Long eventId,@RequestBody EventCommentsDto commentsDto) {
-        return service.writeComments(eventId,commentsDto.getComments());
+    public EventCommentsDto writeComments(@PathVariable Long eventId, @RequestBody EventCommentsDto commentsDto) {
+        return service.writeComments(eventId, commentsDto.getComments());
     }
 
-    @GetMapping("/my") public List<Event> getMyPointsInEvent() {
+    @GetMapping("/my")
+    public List<Event> getMyPointsInEvent() {
         return service.getMyPointsInEvent();
     }
 
-
-   @PostMapping()
-   public Event createEvent(@RequestBody Event event) {
+    @PostMapping()
+    public Event createEvent(@RequestBody Event event) {
         return service.createEvent(event);
     }
-
 
     @DeleteMapping("/{id}")
     public Event removeMyEvent(@PathVariable Long id) {
         return service.removeMyEvent(id);
     }
 
-
     @PutMapping("/{id}")
     public Event changeEvent(@PathVariable Long id, @RequestBody Event event) {
         return service.changeEvent(id, event);
     }
 
-
     @PostMapping("{eventId}/apply")
-    public void applyEvent(@PathVariable Long eventId){
+    public void applyEvent(@PathVariable Long eventId) {
         service.applyEvent(eventId);
     }
 
-
     @DeleteMapping("/{eventId}/cancel")
-    public void cancelEventRequest(@PathVariable Long eventId){
+    public void cancelEventRequest(@PathVariable Long eventId) {
         service.cancelEventRequest(eventId);
     }
 

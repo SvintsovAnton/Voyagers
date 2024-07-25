@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig  {
+public class SecurityConfig {
     private TokenFilter filter;
 
     public SecurityConfig(TokenFilter filter) {
@@ -26,7 +26,7 @@ public class SecurityConfig  {
     }
 
     @Bean
-    public BCryptPasswordEncoder encoder(){
+    public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -39,14 +39,14 @@ public class SecurityConfig  {
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authz -> authz
 
-                        .requestMatchers(HttpMethod.GET,"/events/active").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/events/archive").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/events/{eventId}").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/events/{id}/comments").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/events/active").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/events/archive").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/events/{eventId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/events/{id}/comments").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN")
                         .requestMatchers("/users/role/{user_id}").hasAnyRole("ADMIN")
                         .requestMatchers("users/block/{user_id}").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()

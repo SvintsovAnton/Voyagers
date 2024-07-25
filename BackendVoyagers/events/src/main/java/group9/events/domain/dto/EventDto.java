@@ -23,7 +23,6 @@ public class EventDto {
 
     private LocalDateTime endDateTime;
 
-
     private BigDecimal cost;
 
     private Integer maximalNumberOfParticipants;
