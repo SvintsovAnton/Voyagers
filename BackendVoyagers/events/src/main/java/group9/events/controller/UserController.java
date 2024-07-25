@@ -26,18 +26,18 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<UserDto> getAllUsers(){
+    public List<UserDto> getAllUsers() {
         return service.getAllUsers();
     }
 
     @PutMapping("/role/{user_id}")
     @Transactional
-    public UserDto transferAdminRole(@PathVariable Long user_id){
+    public UserDto transferAdminRole(@PathVariable Long user_id) {
         return service.transferAdminRole(user_id);
     }
 
     @PutMapping("/block/{user_id}")
-    public UserDto blockUser(@PathVariable Long user_id){
+    public UserDto blockUser(@PathVariable Long user_id) {
         return service.blockUser(user_id);
     }
 

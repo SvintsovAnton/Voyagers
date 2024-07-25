@@ -6,11 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
-@Table(name="roles_for_events") public class RoleForEvent {
+@Table(name = "roles_for_events")
+public class RoleForEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "title")
