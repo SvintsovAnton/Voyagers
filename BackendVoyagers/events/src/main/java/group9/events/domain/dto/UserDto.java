@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.Objects;
 
 public class UserDto {
-
     private String firstName;
     private String lastName;
     private Date dateOfBirth;

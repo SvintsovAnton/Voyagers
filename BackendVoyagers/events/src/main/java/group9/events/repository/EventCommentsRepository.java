@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface EventCommentsRepository extends JpaRepository<EventComments,Long> {
+public interface EventCommentsRepository extends JpaRepository<EventComments, Long> {
 
-   List<EventComments> findByEventId(Long eventId);
+    List<EventComments> findByEventId(Long eventId);
 }
