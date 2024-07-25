@@ -18,7 +18,6 @@ public class Activity {
     private String title;
 
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

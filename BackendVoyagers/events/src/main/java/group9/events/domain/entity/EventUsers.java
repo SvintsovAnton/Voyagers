@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="event_users")
+@Table(name = "event_users")
 public class EventUsers {
 
     @Id
@@ -18,7 +18,7 @@ public class EventUsers {
     private Event event;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @ManyToOne
     @JoinColumn(name = "roles_for_events_id", nullable = false)

@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name="event_comments")
+@Table(name = "event_comments")
 public class EventComments {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -30,7 +30,7 @@ public class EventComments {
     @NotNull(message = "Date and time cannot be null")
     private LocalDateTime dateTime;
 
-    @Column(name ="comments", nullable = false)
+    @Column(name = "comments", nullable = false)
     @NotBlank(message = "Comment cannot be blank")
     private String comments;
 

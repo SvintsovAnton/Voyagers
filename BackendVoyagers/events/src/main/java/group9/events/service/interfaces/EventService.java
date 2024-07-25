@@ -17,7 +17,8 @@ public interface EventService {
     List<Event> getArchiveEvents();
 
     List<EventCommentsDto> seeComments(Long eventId);
-    EventCommentsDto writeComments(Long eventId,String comments);
+
+    EventCommentsDto writeComments(Long eventId, String comments);
 
     List<Event> getMyPointsInEvent();
 

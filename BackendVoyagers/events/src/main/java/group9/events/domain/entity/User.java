@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 
-//TODO убрать ненужные сеттеры
-//TODO написать комментарии подробные
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -65,7 +63,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @Column(name = "active", nullable = false)
-    private Boolean active =false;
+    private Boolean active = false;
 
     @ManyToOne
     @JoinColumn(name = "gender", nullable = false)

@@ -18,7 +18,6 @@ public class UserMappingService {
     private GenderRepository genderRepository;
 
 
-
     public UserDto mapEntityToDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setFirstName(user.getFirstName());

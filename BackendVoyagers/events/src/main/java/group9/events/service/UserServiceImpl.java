@@ -1,13 +1,11 @@
 package group9.events.service;
 
 import group9.events.domain.dto.UserDto;
-import group9.events.domain.entity.EventUsers;
 import group9.events.domain.entity.Role;
 import group9.events.domain.entity.User;
 import group9.events.exception_handler.exceptions.UserAlreadyExistsException;
 import group9.events.exception_handler.exceptions.UserNotFoundException;
 import group9.events.repository.EventUsersRepository;
-import group9.events.repository.RoleRepository;
 import group9.events.repository.UserRepository;
 import group9.events.service.interfaces.ConfirmationService;
 import group9.events.service.interfaces.EmailService;
@@ -54,8 +52,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByEmail(username).orElseThrow(
@@ -64,23 +60,22 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public UserDto register(User user) throws UserAlreadyExistsException {
         user.setId(null);
         user.setPassword(encoder.encode(user.getPassword()));
         Role userRole = roleService.getRoleUser();
-        user.setRoles(Set.of(userRole,roleService.getRoleAdmin()));
+        user.setRoles(Set.of(userRole, roleService.getRoleAdmin()));
 
         user.setActive(true);
-        try{
+        try {
             repository.save(user);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user,null,user.getAuthorities());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-          //  emailService.sendConfirmationEmail(user);
+            //  emailService.sendConfirmationEmail(user);
             UserDto userDto = userMappingService.mapEntityToDto(user);
             return userDto;
-        } catch (DataIntegrityViolationException exception){
+        } catch (DataIntegrityViolationException exception) {
             throw new UserAlreadyExistsException("User with that name already exists");
         }
     }
@@ -96,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        return repository.findAll().stream().map(x->userMappingService.mapEntityToDto(x)).toList();
+        return repository.findAll().stream().map(x -> userMappingService.mapEntityToDto(x)).toList();
     }
 
     @Override
@@ -104,14 +99,14 @@ public class UserServiceImpl implements UserService {
     public UserDto transferAdminRole(Long id) {
         User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("User is not found"));
 
-            Role adminRole = roleService.getRoleAdmin();
-            Role userRole = roleService.getRoleUser();
-            Set<Role> updatedRoles = new HashSet<>();
-            updatedRoles.add(adminRole);
-            updatedRoles.add(userRole);
-            user.setRoles(updatedRoles);
-            user = repository.save(user);
-            return userMappingService.mapEntityToDto(user);
+        Role adminRole = roleService.getRoleAdmin();
+        Role userRole = roleService.getRoleUser();
+        Set<Role> updatedRoles = new HashSet<>();
+        updatedRoles.add(adminRole);
+        updatedRoles.add(userRole);
+        user.setRoles(updatedRoles);
+        user = repository.save(user);
+        return userMappingService.mapEntityToDto(user);
     }
 
     @Override

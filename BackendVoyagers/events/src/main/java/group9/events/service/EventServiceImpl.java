@@ -63,8 +63,6 @@ public class EventServiceImpl implements EventService {
     public Event getInformationAboutEvent(Long id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         return event;
-
-
     }
 
     @Override
@@ -153,11 +151,11 @@ public class EventServiceImpl implements EventService {
             eventUsersRepository.deleteAll(allEventUsersInEvent);
 
             List<EventComments> allCommentsInEvent = eventCommentsRepository.findByEventId(id);
-            if (!allCommentsInEvent.isEmpty()){
+            if (!allCommentsInEvent.isEmpty()) {
                 eventCommentsRepository.deleteAll(allCommentsInEvent);
             }
             List<EventsActivities> allActivitesInEvent = eventsActivitiesRepository.findByEventId(id);
-            if (!allActivitesInEvent.isEmpty()){
+            if (!allActivitesInEvent.isEmpty()) {
                 eventsActivitiesRepository.deleteAll(allActivitesInEvent);
             }
 
@@ -226,7 +224,7 @@ public class EventServiceImpl implements EventService {
     public void cancelEventRequest(Long eventId) {
         User user = getCurrentUser();
         EventUsers eventUsers = eventUsersRepository.findByEvent_IdAndUser_Id(eventId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("You were not registered for this event"));
-        if (eventUsers.getRoleForEvent().equals(roleForEventRepository.findByTitle("ROLE_OWNER"))) {
+        if (eventUsers.getRoleForEvent().getTitle().toString().equals(roleForEventRepository.findByTitle("ROLE_OWNER").get().getTitle().toString())) {
             throw new OwnerCannotCancelParticipationException("You cannot cancel participation in an event that you own. You need to delete the events");
         }
         eventUsersRepository.delete(eventUsers);
