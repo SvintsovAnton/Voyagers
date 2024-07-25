@@ -1,0 +1,8 @@
+
+a
+java:S11921"FDefine a constant instead of duplicating this literal "ADMIN" 3 times.(Š²Éÿÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Ú”¼Ê
+f
+java:S1128"KRemove this unused import 'org.springframework.security.config.Customizer'.(Ïóœ¬ùÿÿÿÿ
+‘
+java:S1128"{Remove this unused import 'org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity'.(Ô¦ø
