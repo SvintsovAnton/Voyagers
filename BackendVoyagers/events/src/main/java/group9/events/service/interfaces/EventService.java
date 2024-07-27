@@ -1,6 +1,7 @@
 package group9.events.service.interfaces;
 
 import group9.events.domain.dto.EventCommentsDto;
+import group9.events.domain.dto.EventUserDto;
 import group9.events.domain.entity.Event;
 import group9.events.domain.entity.EventComments;
 import group9.events.domain.entity.User;
@@ -22,15 +23,18 @@ public interface EventService {
 
     List<Event> getMyPointsInEvent();
 
+    List<Event> getMyCreatedEvent();
+
+
     Event createEvent(Event event);
 
     Event removeMyEvent(Long id);
 
     Event changeEvent(Long id, Event newEvent);
 
-    void applyEvent(Long event_id);
+    EventUserDto applyEvent(Long event_id);
 
-    void cancelEventRequest(Long event_id);
+    EventUserDto cancelEventRequest(Long event_id);
 
 
 }

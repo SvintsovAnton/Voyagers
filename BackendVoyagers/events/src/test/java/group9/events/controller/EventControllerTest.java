@@ -91,7 +91,8 @@ class EventControllerTest {
     private final String SLASH ="/";
     private final String APPLAY_ENDPOINT = "/apply";
     private final String CANCEL_ENDPOINT ="/cancel";
-    private final String MY_ENDPOINT= "/my";
+    private final String MY_ENDPOINT= "/my-points";
+    private final String MY_EVENT_ENDPOINT ="/my-event";
     private final String COMMENTS_ENDPOINT = "/comments";
 
 
@@ -258,7 +259,6 @@ class EventControllerTest {
         ResponseEntity<Event[]> response = template.exchange(url, HttpMethod.GET, request, Event[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
         assertTrue(response.hasBody(), "Response doesn't have a body");
-
         Event[] events = response.getBody();
         assertNotNull(events, "Events should not be null");
     }
@@ -291,7 +291,7 @@ class EventControllerTest {
     @Test
     @Order(7)
     public void negativeGettingEventWhichDoesNotExistByIdWithoutAuthorization(){
-        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+100;
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+10000;
         HttpEntity<Void> request = new HttpEntity<>(headers);
         ResponseEntity<Event> response=template.exchange(url,HttpMethod.GET,request, Event.class);
         assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode(),"Response has unexpected status");
@@ -336,7 +336,7 @@ class EventControllerTest {
     @Test
     @Order(10)
     public void negativeNotExcistEventChangingByUserWithAuthorization(){
-        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+100;
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+10000;
         Event modifededEvent = new Event();
         modifededEvent.setTitle(TEST_EVENT_CHANGING);
         modifededEvent.setAddressStart(SET_ADDRESS_START);
@@ -482,6 +482,19 @@ class EventControllerTest {
 
     @Test
     @Order(22)
+    public void positiveSeeMyCreatedEvent(){
+        String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+MY_EVENT_ENDPOINT;
+        headers.set("Authorization", userAccessToken);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<Event[]> response = template.exchange(url,HttpMethod.GET,request,Event[].class);
+        Optional<Event> eventOptional = Arrays.stream(response.getBody())
+                .filter(x -> x.getId().equals(ID_EVENTS_CREATED_USER))
+                .findFirst();
+        assertTrue(eventOptional.isPresent());
+    }
+
+    @Test
+    @Order(23)
     public void positiveRemoveEventByUser(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_USER;
         headers.set("Authorization", userAccessToken);
@@ -493,7 +506,7 @@ class EventControllerTest {
 
 
     @Test
-    @Order(23)
+    @Order(24)
     public void negativeRemoveEventByUserNotOwner(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN;
         headers.set("Authorization", userAccessToken);
@@ -503,7 +516,7 @@ class EventControllerTest {
     }
 
     @Test
-    @Order(24)
+    @Order(25)
     public void positiveRemoveEventByAdmin(){
         String url = URL_PREFIX+port+EVENT_RESOURCE_NAME+SLASH+ID_EVENTS_CREATED_ADMIN;
         headers.set("Authorization", adminAccessToken);

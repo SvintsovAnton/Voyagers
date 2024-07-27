@@ -6,6 +6,7 @@ import group9.events.domain.dto.UserDto;
 import group9.events.domain.entity.EventComments;
 import group9.events.domain.entity.User;
 import group9.events.repository.GenderRepository;
+import group9.events.repository.UserRepository;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class UserMappingService {
 
     @Autowired
     private GenderRepository genderRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     public UserDto mapEntityToDto(User user) {
@@ -43,7 +47,10 @@ public class UserMappingService {
         user.setPhone(userDto.getPhone());
         user.setPhoto(userDto.getPhoto());
         Gender gender = genderRepository.findByGender(userDto.getGender());
-
+        user.setActive(userRepository.findByEmail(userDto.getEmail()).orElse(null).getActive());
+        user.setRoles(userRepository.findByEmail(userDto.getEmail()).orElse(null).getRoles());
+        user.setPassword(userRepository.findByEmail(userDto.getEmail()).orElse(null).getPassword());
+        user.setId(userRepository.findByEmail(userDto.getEmail()).orElse(null).getId());
         user.setGender(gender);
 
         return user;

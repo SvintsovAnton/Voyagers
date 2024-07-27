@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         user.setId(null);
         user.setPassword(encoder.encode(user.getPassword()));
         Role userRole = roleService.getRoleUser();
-        user.setRoles(Set.of(userRole, roleService.getRoleAdmin()));
+        user.setRoles(Set.of(userRole));
 
         user.setActive(true);
         try {
