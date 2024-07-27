@@ -3,6 +3,7 @@ package group9.events.security.sec_service;
 import group9.events.domain.entity.User;
 import group9.events.exception_handler.ConfirmationFailedException;
 
+import group9.events.exception_handler.exceptions.InvalidPasswordException;
 import group9.events.security.sec_dto.TokenResponseDto;
 import group9.events.service.interfaces.UserService;
 import io.jsonwebtoken.Claims;
@@ -33,7 +34,7 @@ public class AuthService {
         User foundUser = (User) userService.loadUserByUsername(username);
 
         if (!foundUser.getActive()) {
-            throw new ConfirmationFailedException("Your registration is not confirmed");
+            throw new ConfirmationFailedException("your registration is not confirmed or the user is blocked");
         }
 
         if (passwordEncoder.matches(inboundUser.getPassword(), foundUser.getPassword())) {
@@ -42,7 +43,7 @@ public class AuthService {
             refreshStorage.put(username, refreshToken);
             return new TokenResponseDto(accessToken, refreshToken);
         } else {
-            throw new AuthException("Password is incorrect");
+            throw new InvalidPasswordException("Password is incorrect");
         }
     }
 

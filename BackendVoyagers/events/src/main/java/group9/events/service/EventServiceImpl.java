@@ -1,11 +1,13 @@
 package group9.events.service;
 
 import group9.events.domain.dto.EventCommentsDto;
+import group9.events.domain.dto.EventUserDto;
 import group9.events.domain.entity.*;
 import group9.events.exception_handler.exceptions.*;
 import group9.events.repository.*;
 import group9.events.service.interfaces.EventService;
 import group9.events.service.mapping.EventCommentsMappingService;
+import group9.events.service.mapping.EventUserMappingService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,8 +29,9 @@ public class EventServiceImpl implements EventService {
     private final EventCommentsMappingService eventCommentsMappingService;
     private final RoleForEventRepository roleForEventRepository;
     private final EventsActivitiesRepository eventsActivitiesRepository;
+    private final EventUserMappingService eventUserMappingService;
 
-    public EventServiceImpl(EventRepository eventRepository, EventCommentsRepository eventCommentsRepository, UserRepository userRepository, EventUsersRepository eventUsersRepository, EventCommentsMappingService eventCommentsMappingService, RoleForEventRepository roleForEventRepository, EventsActivitiesRepository eventsActivitiesRepository) {
+    public EventServiceImpl(EventRepository eventRepository, EventCommentsRepository eventCommentsRepository, UserRepository userRepository, EventUsersRepository eventUsersRepository, EventCommentsMappingService eventCommentsMappingService, RoleForEventRepository roleForEventRepository, EventsActivitiesRepository eventsActivitiesRepository, EventUserMappingService eventUserMappingService) {
         this.eventRepository = eventRepository;
         this.eventCommentsRepository = eventCommentsRepository;
         this.userRepository = userRepository;
@@ -36,6 +39,7 @@ public class EventServiceImpl implements EventService {
         this.eventCommentsMappingService = eventCommentsMappingService;
         this.roleForEventRepository = roleForEventRepository;
         this.eventsActivitiesRepository = eventsActivitiesRepository;
+        this.eventUserMappingService = eventUserMappingService;
     }
 
     private User getCurrentUser() {
@@ -109,12 +113,25 @@ public class EventServiceImpl implements EventService {
     }
 
 
-    //TODO implement later a search by the user who is currently registered
+
     @Override
     public List<Event> getMyPointsInEvent() {
         User user = getCurrentUser();
-        return eventUsersRepository.findEventUsersByUser_Id(user.getId()).orElseThrow(() -> new ResourceNotFoundException("you don't have any events that you participate in")).stream().map(EventUsers::getEvent).toList();
+        RoleForEvent roleForEvent;
+       roleForEvent = roleForEventRepository.findByTitle("ROLE_PARTICIPANT").orElseThrow(()->new ResourceNotFoundException("Role don´t found"));
+       List<EventUsers> listOfUsers = eventUsersRepository.findEventUsersByUser_IdAndRoleForEvent(user.getId(),roleForEvent).orElseThrow(()->new ResourceNotFoundException("Events for this user don´t found"));
+       List<Event> eventList =listOfUsers.stream().map(x->x.getEvent()).toList();
+       return eventList;
+    }
 
+    @Override
+    public List<Event> getMyCreatedEvent() {
+        User user = getCurrentUser();
+        RoleForEvent roleForEvent;
+        roleForEvent = roleForEventRepository.findByTitle("ROLE_OWNER").orElseThrow(()->new ResourceNotFoundException("Role don´t found"));
+        List<EventUsers> listOfUsers = eventUsersRepository.findEventUsersByUser_IdAndRoleForEvent(user.getId(),roleForEvent).orElseThrow(()->new ResourceNotFoundException("Events for this user don´t found"));
+        List<Event> eventList =listOfUsers.stream().map(x->x.getEvent()).toList();
+        return eventList;
     }
 
 
@@ -198,7 +215,7 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public void applyEvent(Long eventId) {
+    public EventUserDto applyEvent(Long eventId) {
         User user = getCurrentUser();
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
@@ -215,18 +232,20 @@ public class EventServiceImpl implements EventService {
         eventUsers.setEvent(event);
         eventUsers.setUser(user);
         eventUsers.setRoleForEvent(roleForEventRepository.findByTitle("ROLE_PARTICIPANT").orElseThrow(() -> new ResourceNotFoundException("Role not found")));
-
         eventUsersRepository.save(eventUsers);
+        return  eventUserMappingService.mapEntityToDto(eventUsers);
+
     }
 
 
     @Override
-    public void cancelEventRequest(Long eventId) {
+    public EventUserDto cancelEventRequest(Long eventId) {
         User user = getCurrentUser();
         EventUsers eventUsers = eventUsersRepository.findByEvent_IdAndUser_Id(eventId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("You were not registered for this event"));
         if (eventUsers.getRoleForEvent().getTitle().toString().equals(roleForEventRepository.findByTitle("ROLE_OWNER").get().getTitle().toString())) {
             throw new OwnerCannotCancelParticipationException("You cannot cancel participation in an event that you own. You need to delete the events");
         }
         eventUsersRepository.delete(eventUsers);
+        return  eventUserMappingService.mapEntityToDto(eventUsers);
     }
 }

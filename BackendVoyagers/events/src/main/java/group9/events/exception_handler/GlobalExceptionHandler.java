@@ -87,4 +87,12 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(ConfirmationFailedException.class)
+    public ResponseEntity<Response> handleException(ConfirmationFailedException e) {
+        Response response = new Response(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
+
+
 }

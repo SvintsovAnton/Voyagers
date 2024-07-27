@@ -1,6 +1,7 @@
 package group9.events.controller;
 
 import group9.events.domain.dto.EventCommentsDto;
+import group9.events.domain.dto.EventUserDto;
 import group9.events.domain.entity.Event;
 import group9.events.service.interfaces.EventService;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +43,14 @@ public class EventController {
         return service.writeComments(eventId, commentsDto.getComments());
     }
 
-    @GetMapping("/my")
+    @GetMapping("/my-points")
     public List<Event> getMyPointsInEvent() {
         return service.getMyPointsInEvent();
+    }
+
+    @GetMapping("/my-event")
+    public List<Event> getMyEvent() {
+        return service.getMyCreatedEvent();
     }
 
     @PostMapping()
@@ -63,13 +69,13 @@ public class EventController {
     }
 
     @PostMapping("{eventId}/apply")
-    public void applyEvent(@PathVariable Long eventId) {
-        service.applyEvent(eventId);
+    public EventUserDto applyEvent(@PathVariable Long eventId) {
+        return service.applyEvent(eventId);
     }
 
     @DeleteMapping("/{eventId}/cancel")
-    public void cancelEventRequest(@PathVariable Long eventId) {
-        service.cancelEventRequest(eventId);
+    public EventUserDto cancelEventRequest(@PathVariable Long eventId) {
+        return service.cancelEventRequest(eventId);
     }
 
 }
