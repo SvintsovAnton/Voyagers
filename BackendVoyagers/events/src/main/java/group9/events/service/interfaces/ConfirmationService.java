@@ -7,4 +7,6 @@ public interface ConfirmationService {
     String generateConfirmationCode(User user);
 
     User getUserByConfirmationCode(String code);
+
+    String validateConfirmationCode(String token);
 }
