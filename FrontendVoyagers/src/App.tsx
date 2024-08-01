@@ -1,20 +1,31 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
+import Home from "pages/Home/Home"
 import Signup from "pages/Signup/Signup"
 import Login from "pages/Login/Login"
+import ChangePassword from "pages/ChangePassword/ChangePassword"
+import SetNewPasswword from "pages/SetNewPassword/SetNewPassword"
+import PageNotFound from "pages/PageNotFound/PageNotFound"
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/events/active" element="Home" />
+        <Route path="/events/active" element={<Home />} />
+        <Route path="/profile" element="Profile" />
+        <Route path="/events/active/loggedin" element="My events"/>
+        <Route path="/events?archive=true" element="History" />
+        <Route path="/settings/loggedin" element="Settings" />
+        <Route path="/info" element="Info" />
+        <Route path="/about" element="Cohort 33E Co, Germany, Berlin" />
         <Route path="/users/register" element={<Signup />} />
         <Route path="/info/termsofuse" element="Terms Of Use" />
         <Route path="/info/privacypolicy" element="Privacy Policy" />
         <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/login/changepassword" element="Change Password" />
-        <Route path="/auth/login/newpassword" element="Set New Password" />
-        <Route path="*" element="Page Not Found" />
+        <Route path="/auth/login/changepassword" element={<ChangePassword />} />
+        <Route path="/auth/login/setnewpassword" element={<SetNewPasswword />} />
+        <Route path="/" element={<PageNotFound />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   )
