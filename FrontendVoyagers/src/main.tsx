@@ -11,7 +11,7 @@ if (container) {
 
   root.render(
     <Provider store={store}>
-      <GlobalStyles/>
+      <GlobalStyles />
       <App />
     </Provider>,
   )
@@ -20,4 +20,3 @@ if (container) {
     "Root element with ID 'root' was not found in the document. Ensure there is a corresponding HTML element with the ID 'root' in your HTML file.",
   )
 }
-

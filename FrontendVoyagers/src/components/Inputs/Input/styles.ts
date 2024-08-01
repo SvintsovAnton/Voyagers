@@ -2,42 +2,49 @@ import styled from "@emotion/styled"
 
 import { colors } from "styles/colors"
 
-export const InputLabel = styled.label`
-  font-size: 16px;
+export const InputLabel = styled.p`
+  font-size: 18px;
   font-family: "Montserrat";
+  font-weight: 800;
   margin-left: 4px;
-  color: white;
+  color: ${colors.secondaryGrey};
 `
 
-export const InputComponent = styled.input`
+export const InputComponent = styled.input<{ error?: boolean }>`
   width: 100%;
   padding: 8px;
   outline: none;
   border-radius: 14px;
   font-size: 16px;
-  border: 2px solid ${colors.secondaryGrey};
-  background-color: transparent;
+  border: 2px solid
+    ${props => (props.error ? colors.secondaryRed : "transparent")};
+  background-color: white;
   font-family: "Montserrat";
-  color: white;
+  color: ${colors.secondaryGrey};
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  transition: all 0.2s ease;
   &:hover {
-    border-color: ${colors.tertiaryGrey};
+    border-color: grey;
   }
 `
 
 export const IconContainer = styled.img`
   display: flex;
   flex-direction: row-reverse;
-  margin: 28px 0px 0px 407px;
+  margin: 35px 0px 0px 405px;
   width: 10%;
-  height: 30px;
+  height: 20px;
   position: absolute;
   cursor: pointer;
 `
 
 export const ErrorContainer = styled.div`
   font-size: 12px;
-  color: red;
+  font-family: "Montserrat";
+  font-weight: 600;
+  color: ${colors.secondaryRed};
   height: 6px;
+  margin-left: 15px;
 `
 
 export const InputContainer = styled.div`

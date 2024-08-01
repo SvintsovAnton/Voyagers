@@ -12,10 +12,7 @@ export const usersLoginSlice = createAppSlice({
   initialState: usersLoginSliceInitialState,
   reducers: create => ({
     authUser: create.reducer(
-      (
-        state: UsersLoginSliceState,
-        action: PayloadAction<LoginUserData>,
-      ) => {
+      (state: UsersLoginSliceState, action: PayloadAction<LoginUserData>) => {
         state.users = [...state.users, action.payload]
         fetch("/api/auth/login", {
           method: "POST",
