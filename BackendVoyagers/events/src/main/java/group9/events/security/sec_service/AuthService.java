@@ -1,10 +1,15 @@
 package group9.events.security.sec_service;
 
+import group9.events.domain.dto.UserDto;
 import group9.events.domain.entity.User;
 import group9.events.exception_handler.ConfirmationFailedException;
 
+import group9.events.exception_handler.exceptions.InvalidPasswordException;
+import group9.events.exception_handler.exceptions.UserNotFoundException;
+import group9.events.repository.UserRepository;
 import group9.events.security.sec_dto.TokenResponseDto;
 import group9.events.service.interfaces.UserService;
+import group9.events.service.mapping.UserMappingService;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,12 +25,17 @@ public class AuthService {
     private TokenService tokenService;
     private Map<String, String> refreshStorage;
     private BCryptPasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private UserMappingService userMappingService;
 
-    public AuthService(UserService userService, TokenService tokenService, BCryptPasswordEncoder passwordEncoder) {
+
+    public AuthService(UserService userService, TokenService tokenService, Map<String, String> refreshStorage, BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, UserMappingService userMappingService) {
         this.userService = userService;
         this.tokenService = tokenService;
+        this.refreshStorage = refreshStorage;
         this.passwordEncoder = passwordEncoder;
-        this.refreshStorage = new HashMap<>();
+        this.userRepository = userRepository;
+        this.userMappingService = userMappingService;
     }
 
     public TokenResponseDto login(User inboundUser) throws AuthException {
@@ -33,7 +43,7 @@ public class AuthService {
         User foundUser = (User) userService.loadUserByUsername(username);
 
         if (!foundUser.getActive()) {
-            throw new ConfirmationFailedException("Your registration is not confirmed");
+            throw new ConfirmationFailedException("your registration is not confirmed or the user is blocked");
         }
 
         if (passwordEncoder.matches(inboundUser.getPassword(), foundUser.getPassword())) {
@@ -42,7 +52,7 @@ public class AuthService {
             refreshStorage.put(username, refreshToken);
             return new TokenResponseDto(accessToken, refreshToken);
         } else {
-            throw new AuthException("Password is incorrect");
+            throw new InvalidPasswordException("Password is incorrect");
         }
     }
 
@@ -59,4 +69,21 @@ public class AuthService {
             return new TokenResponseDto(null, null);
         }
     }
+
+
+    public UserDto getUserProfile(String token){
+        if (tokenService.validateAccessToken(token)){
+            Claims claims = tokenService.getAccessClaims(token);
+            String email = claims.getSubject();
+            User user = userRepository.findByEmail(email).orElseThrow(()->new UserNotFoundException("User don´t found"));
+            if(user!=null){
+               UserDto userDto= userMappingService.mapEntityToDto(user);
+               return userDto;
+            }
+        }
+        throw new UserNotFoundException("User don´t found");
+    }
+
+
+
 }

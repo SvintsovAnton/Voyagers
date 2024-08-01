@@ -1,5 +1,6 @@
 package group9.events.controller;
 
+import group9.events.domain.dto.ChangePasswordRequest;
 import group9.events.domain.dto.UserDto;
 import group9.events.domain.entity.User;
 import group9.events.service.interfaces.UserService;
@@ -41,4 +42,13 @@ public class UserController {
         return service.blockUser(user_id);
     }
 
+
+    @PutMapping("/changepass")
+    public UserDto changePassword(@RequestBody ChangePasswordRequest request) {
+        return service.changePassword(request.getOldPassword(), request.getNewPassword());
+    }
+
+    @PostMapping("/addphoto/{url}")
+    public UserDto addPhoto(@PathVariable String url)
+    {return service.addPhoto(url);}
 }

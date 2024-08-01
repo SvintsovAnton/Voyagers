@@ -59,6 +59,7 @@ class UserControllerTest {
     private final String EMAIL_FOR_USER = "usertest1@test.com";
     private final String EMAIL_FOR_USER2 = "usertest2@test.com";
     private final String EMAIL_FOR_ADMIN = "admintest1@test.com";
+    private final String EMAIL_FOR_USER_AUTHENTICATION = "userauthtest@test.com";
     private final String GENDER_MALE="Male";
     private final String GENDER_FEMALE = "Female";
     private final Date DATE_OF_BIRTH;
@@ -90,6 +91,8 @@ class UserControllerTest {
     private final String BLOCK_ENDPOINT="/block";
 
     private final String SLASH ="/";
+
+    private final String REGISTER_ENDPOINT ="/register";
 
 
 
@@ -299,4 +302,22 @@ class UserControllerTest {
         userUpdate.setActive(true);
         userRepository.save(userUpdate);
     }
+
+    @Test
+    @Order(7)
+    void positiveCreateNewUserWithCheckAuthorisation()
+    {
+        String url =URL_PREFIX+port+USER_RESOURCE_NAME+REGISTER_ENDPOINT;
+        User user = new User();
+        user.setFirstName(TEST_USER_NAME);
+        user.setLastName(LAST_NAME_FOR_ALLE);
+        user.setDateOfBirth(DATE_OF_BIRTH);
+        user.setEmail(EMAIL_FOR_USER_AUTHENTICATION);
+        user.setPhone(PHONE);
+        user.setPassword(TEST_PASSWORD);
+        user.setPhoto(PFOTO);
+        user.setGender(genderRepository.findByGender(GENDER_FEMALE));
+
+    }
+
 }
