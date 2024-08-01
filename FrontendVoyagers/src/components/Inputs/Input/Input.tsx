@@ -7,7 +7,8 @@ import {
   ErrorContainer,
   InputContainer,
 } from "./styles"
-import { InputProps } from "./types"
+
+import InputProps from "./types"
 
 import EyeIcon from "assets/eye-icon.svg"
 import EyeOffIcon from "assets/eye-off-icon.svg"
@@ -19,7 +20,7 @@ export default function Input({
   type = "text",
   value,
   onChange,
-  // error,
+  error,
 }: InputProps) {
   const [isPasswordVisible, setPasswordVisible] = useState(false)
 
@@ -29,13 +30,14 @@ export default function Input({
 
   return (
     <InputContainer>
-      <InputLabel htmlFor={id}>{label}</InputLabel>
+      {label && <InputLabel>{label}</InputLabel>}
       <InputComponent
         id={id}
         name={name}
         type={isPasswordVisible ? "text" : type} // Используем 'text' если пароль видим
         value={value}
         onChange={onChange}
+        error={!!error}
       />
       {type === "password" && (
         <IconContainer
@@ -44,7 +46,7 @@ export default function Input({
           alt={isPasswordVisible ? "Hide password" : "Show password"}
         />
       )}
-      {/* <ErrorContainer>{error}</ErrorContainer> */}
+      {error && <ErrorContainer>{error}</ErrorContainer>}
     </InputContainer>
   )
 }

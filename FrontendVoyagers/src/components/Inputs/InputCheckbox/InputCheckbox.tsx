@@ -1,9 +1,10 @@
 import {
-  InputCheckboxComponent,
-  InputCheckboxContainer,
   InputCheckboxLabel,
+  InputCheckboxComponent,
+  ErrorContainer,
+  InputCheckboxContainer,
 } from "./styles"
-import { InputCheckboxProps } from "./types"
+import InputCheckboxProps from "./types"
 
 export default function InputCheckbox({
   id,
@@ -12,6 +13,7 @@ export default function InputCheckbox({
   label,
   checked,
   onChange,
+  error,
 }: InputCheckboxProps) {
   return (
     <InputCheckboxContainer>
@@ -22,7 +24,9 @@ export default function InputCheckbox({
       type={type}
       checked={checked}
       onChange={onChange}
+      // error={!!error}
     />
+    {error && <ErrorContainer>{error}</ErrorContainer>}
     </InputCheckboxContainer>
   )
 }

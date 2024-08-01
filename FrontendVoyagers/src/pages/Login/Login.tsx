@@ -1,9 +1,11 @@
 import { useFormik } from "formik"
+import * as Yup from "yup"
 import { useAppDispatch } from "store/hooks"
 import { usersLoginSliceActions } from "store/redux/usersLogin/usersLoginSlice"
 
-import Button from "components/Button/Button"
-import Input from "components/Input/Input"
+import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
+import Button from "components/Buttons/Button/Button"
+import Input from "components/Inputs/Input/Input"
 
 import {
   LoginPageWrapper,
@@ -13,19 +15,21 @@ import {
   DontHaveAnAccount,
   Signup,
   ForgotPassword,
-  ButtonContainer,
-  RightSide,
-  Title,
-  Greetings,
 } from "./styles"
 
 export default function Login() {
+  const schema = Yup.object().shape({
+    email: Yup.string().required("email is required"),
+    password: Yup.string().required("password is required"),
+  })
+
   const dispatch = useAppDispatch()
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
+    validationSchema: schema,
     onSubmit: values => {
       if (!!values.email && !!values.password) {
         dispatch(usersLoginSliceActions.authUser(values))
@@ -49,6 +53,7 @@ export default function Login() {
             type="email"
             value={formik.values.email}
             onChange={formik.handleChange}
+            error={formik.errors.email}
           />
           <Input
             id="password"
@@ -57,16 +62,14 @@ export default function Login() {
             type="password"
             value={formik.values.password}
             onChange={formik.handleChange}
+            error={formik.errors.password}
           />
-          <ForgotPassword href="/auth/login/changepassword">forgot password?</ForgotPassword>
-          <ButtonContainer><Button name="LOG IN" type="submit"/></ButtonContainer>
+          <ForgotPassword href="/auth/login/changepassword">
+            forgot password?
+          </ForgotPassword>
+          <Button name="LOG IN" type="submit" />
         </LoginForm>
-        <RightSide>
-          <h2>
-            <Title href="/auth/login">Voyagers</Title>
-          </h2>
-          <Greetings>Welcome to VOYAGERS!</Greetings>
-        </RightSide>
+        <FormRightSideTemplate path="/auth/login"></FormRightSideTemplate>
       </LoginFormWrapper>
     </LoginPageWrapper>
   )

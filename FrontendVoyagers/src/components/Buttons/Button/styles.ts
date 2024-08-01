@@ -3,20 +3,25 @@ import styled from "@emotion/styled"
 import { colors } from "styles/colors"
 
 export const ButtonComponent = styled.button`
-  width: 100%;
+  width: fit-content;
+  min-height: 48px;
   outline: none;
   border: none;
   border-radius: 10px;
   background-color: ${colors.secondaryBlue};
   color: white;
-  font-size: 14px;
+  font-size: 16px;
   font-family: "Montserrat";
-  font-weight: 600;
+  font-weight: 800;
   padding: 0px 30px;
   letter-spacing: 1px;
+  transition: all 0.2s ease;
   cursor: pointer;
   &:hover {
     background-color: ${colors.tertiaryBlue};
-    color: white;
+  }
+  &:active {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
   }
 `

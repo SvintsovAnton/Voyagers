@@ -14,9 +14,7 @@ export const eventsSlice = createAppSlice({
   initialState: eventsSliceInitialState,
   reducers: create => ({
     addEvent: create.reducer(
-      (state: EventSliceState, action: PayloadAction<EventData>) => {
-        
-      },
+      (state: EventSliceState, action: PayloadAction<EventData>) => {},
     ),
   }),
   selectors: {

@@ -2,13 +2,15 @@ import { useState } from "react"
 // import { useEffect } from "react"
 
 import { useFormik } from "formik"
+import * as Yup from "yup"
 
 import { useAppDispatch } from "store/hooks"
 import { usersRegisterSliceActions } from "store/redux/usersRegister/usersRegisterSlice"
 
-import Button from "components/Button/Button"
-import Input from "components/Input/Input"
-import InputCheckbox from "components/InputCheckbox/InputCheckbox"
+import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
+import Button from "components/Buttons/Button/Button"
+import Input from "components/Inputs/Input/Input"
+import InputCheckbox from "components/Inputs/InputCheckbox/InputCheckbox"
 
 import {
   SignupPageWrapper,
@@ -22,13 +24,30 @@ import {
   Agreement,
   TermsOfUse,
   PrivacyPolicy,
-  ButtonContainer,
-  RightSide,
-  Title,
-  Greetings,
 } from "./styles"
 
 export default function Signup() {
+  const schema = Yup.object().shape({
+    firstName: Yup.string().required("*first name is required"),
+    lastName: Yup.string().required("*last name is required"),
+    dateOfBirth: Yup.date().required("*date of birth is required"),
+    email: Yup.string()
+      .email("*enter a valid email")
+      .required("*email is required"),
+    password: Yup.string().required("*password is required"),
+    // Ensure one of the gender checkboxes is selected
+    gender: Yup.object()
+      .shape({
+        id: Yup.string().required("*any of gender is required"),
+      })
+      .required(),
+    // Ensure the privacy policy and terms of use checkbox is checked
+    termsofuseandprivacypolicy: Yup.bool().oneOf(
+      [true],
+      "You must agree to the terms of use and privacy policy",
+    ),
+  })
+
   // useEffect(() => {fetch("/api/users/register")}, [])
   const dispatch = useAppDispatch()
   const [selectedGender, setSelectedGender] = useState("")
@@ -43,6 +62,7 @@ export default function Signup() {
       photo: "",
       gender: { id: selectedGender },
     },
+    validationSchema: schema,
     onSubmit: values => {
       if (
         !!values.firstName &&
@@ -50,8 +70,6 @@ export default function Signup() {
         !!values.dateOfBirth &&
         !!values.email &&
         !!values.password &&
-        !!values.phone &&
-        // !!values.photo &&
         !!values.gender
       ) {
         dispatch(usersRegisterSliceActions.addUser(values))
@@ -72,13 +90,6 @@ export default function Signup() {
           <AlreadyHaveAnAccount>
             Already have an account? <Login href="/auth/login">Login</Login>
           </AlreadyHaveAnAccount>
-          {/* <Input
-              id="photo"
-              name="photo"
-              label="photo"
-              value={formik.values.photo}
-              onChange={formik.handleChange}
-            /> */}
           <Input
             id="email"
             name="email"
@@ -86,6 +97,7 @@ export default function Signup() {
             type="email"
             value={formik.values.email}
             onChange={formik.handleChange}
+            error={formik.errors.email}
           />
           <FirstLastNameContainer>
             <Input
@@ -94,6 +106,7 @@ export default function Signup() {
               label="firstname"
               value={formik.values.firstName}
               onChange={formik.handleChange}
+              error={formik.errors.firstName}
             />
             <Input
               id="lastName"
@@ -101,6 +114,7 @@ export default function Signup() {
               label="lastname"
               value={formik.values.lastName}
               onChange={formik.handleChange}
+              error={formik.errors.lastName}
             />
           </FirstLastNameContainer>
           <Input
@@ -110,15 +124,17 @@ export default function Signup() {
             type="date"
             value={formik.values.dateOfBirth}
             onChange={formik.handleChange}
+            error={formik.errors.dateOfBirth}
           />
           <TelAndGenderContainer>
             <Input
               id="phone"
               name="phone"
-              label="tel."
+              label="phone"
               type="tel"
               value={formik.values.phone}
               onChange={formik.handleChange}
+              error={formik.errors.phone}
             />
             <InputCheckbox
               id="genderMan"
@@ -140,6 +156,7 @@ export default function Signup() {
               label="Other"
               checked={selectedGender === "3"}
               onChange={() => handleGenderChange("3")}
+              error={formik.errors.gender?.id}
             />
           </TelAndGenderContainer>
           <Input
@@ -149,27 +166,23 @@ export default function Signup() {
             type="password"
             value={formik.values.password}
             onChange={formik.handleChange}
+            error={formik.errors.password}
           />
           <Agreement>
             *by creating an account I agree to the{" "}
             <TermsOfUse href="/info/termsofuse">terms of use</TermsOfUse> and{" "}
-            <PrivacyPolicy href="/info/privacypolicy">privacy policy</PrivacyPolicy>
+            <PrivacyPolicy href="/info/privacypolicy">
+              privacy policy
+            </PrivacyPolicy>
             <InputCheckbox
               id="termsofuseandprivacypolicy"
               name="termsofuseandprivacypolicy"
               onChange={formik.handleChange}
             />
           </Agreement>
-          <ButtonContainer>
-            <Button name="CREATE AN ACCOUNT" type="submit" />
-          </ButtonContainer>
+          <Button name="CREATE AN ACCOUNT" type="submit" />
         </SignupForm>
-        <RightSide>
-          <h2>
-            <Title href="/users/register">Voyagers</Title>
-          </h2>
-          <Greetings>Welcome to VOYAGERS!</Greetings>
-        </RightSide>
+        <FormRightSideTemplate path={"/users/register"}></FormRightSideTemplate>
       </SignupFormWrapper>
     </SignupPageWrapper>
   )

@@ -1,6 +1,6 @@
 import { ButtonComponent } from "./styles"
 
-import { ButtonProps } from "./types"
+import ButtonProps from "./types"
 
 export default function Button({
   name,
