@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             //Sending of messages upon registration has been temporarily disabled
-           // emailService.sendConfirmationEmail(user);
+           //emailService.sendConfirmationEmail(user);
             UserDto userDto = userMappingService.mapEntityToDto(user);
             return userDto;
         } catch (DataIntegrityViolationException exception) {
