@@ -13,6 +13,8 @@ import group9.events.security.sec_service.AuthService;
 import group9.events.service.interfaces.UserService;
 import group9.events.service.mapping.UserMappingService;
 import jakarta.security.auth.message.AuthException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,12 +40,29 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public TokenResponseDto login(@RequestBody User user) {
+    public TokenResponseDto login(@RequestBody User user,  HttpServletResponse response) {
         try {
+            TokenResponseDto tokenResponseDto = service.login(user);
+            Cookie cookieAccess = new Cookie("Access-Token", tokenResponseDto.getAccessToken());
+            cookieAccess.setPath("/");
+            cookieAccess.setHttpOnly(true);
+            response.addCookie(cookieAccess);
+
+            Cookie cookieRefresh = new Cookie("Refresh-Token", tokenResponseDto.getRefreshToken());
+            cookieRefresh.setPath("/");
+            cookieRefresh.setHttpOnly(true);
+            response.addCookie(cookieRefresh);
+
             return service.login(user);
         } catch (AuthException e) {
             throw new UserNotAuthenticatedException("user don´t authenticated");
         }
+    }
+
+
+    @GetMapping("/logout")
+    public void logout(HttpServletResponse response) {
+        removeCookie(response);
     }
 
     @GetMapping("/profile")
@@ -77,5 +96,13 @@ public class AuthController {
 
     }
 
+
+    private void removeCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("Access-Token", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
 
 }
