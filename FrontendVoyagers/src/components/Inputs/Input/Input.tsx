@@ -1,11 +1,11 @@
 import { useState } from "react"
 
 import {
+  InputContainer,
   InputLabel,
   InputComponent,
   IconContainer,
   ErrorContainer,
-  InputContainer,
 } from "./styles"
 
 import InputProps from "./types"

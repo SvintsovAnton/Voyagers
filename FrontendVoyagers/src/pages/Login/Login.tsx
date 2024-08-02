@@ -1,5 +1,6 @@
 import { useFormik } from "formik"
 import * as Yup from "yup"
+
 import { useAppDispatch } from "store/hooks"
 import { usersLoginSliceActions } from "store/redux/usersLogin/usersLoginSlice"
 
@@ -16,11 +17,12 @@ import {
   Signup,
   ForgotPassword,
 } from "./styles"
+import { login } from "store/redux/auth/authSlice"
 
 export default function Login() {
   const schema = Yup.object().shape({
-    email: Yup.string().required("email is required"),
-    password: Yup.string().required("password is required"),
+    email: Yup.string().required(),
+    password: Yup.string().required(),
   })
 
   const dispatch = useAppDispatch()
@@ -32,7 +34,7 @@ export default function Login() {
     validationSchema: schema,
     onSubmit: values => {
       if (!!values.email && !!values.password) {
-        dispatch(usersLoginSliceActions.authUser(values))
+        dispatch(login(values))
       }
     },
   })

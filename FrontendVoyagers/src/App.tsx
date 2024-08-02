@@ -6,8 +6,18 @@ import Login from "pages/Login/Login"
 import ChangePassword from "pages/ChangePassword/ChangePassword"
 import SetNewPasswword from "pages/SetNewPassword/SetNewPassword"
 import PageNotFound from "pages/PageNotFound/PageNotFound"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { profile, selectIsAuthenticated } from "store/redux/auth/authSlice"
+import { useEffect } from "react"
 
 export default function App() {
+
+  const isAuthorized = useAppSelector(selectIsAuthenticated)
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(profile())
+  }, [dispatch, isAuthorized])
+
   return (
     <BrowserRouter>
       <Routes>

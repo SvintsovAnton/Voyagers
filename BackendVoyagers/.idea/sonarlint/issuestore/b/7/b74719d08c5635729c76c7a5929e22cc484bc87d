@@ -1,0 +1,10 @@
+
+u
+java:S1488P"_Immediately return this expression instead of assigning it to the temporary variable "userDto".(âÙ“à
+C
+java:S5411-"(Use a primitive boolean expression here.(‹ø•ıÿÿÿÿ
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ÃŞœôıÿÿÿÿ
+ 
+java:S1130)"„Remove the declaration of thrown exception 'jakarta.security.auth.message.AuthException', as it cannot be thrown from method's body.(¨şëğÿÿÿÿÿ
+I
+java:S1128".Remove this unused import 'java.util.HashMap'.(™˜”€ùÿÿÿÿ

@@ -13,11 +13,15 @@ export default function SidebarHidden({ onCloseSidebar }: SidebarHiddenProps) {
   return (
     <SidebarHiddenWrapper>
       <ButtonPrimaryNavbar
-        name=""
         path="/events/active"
         src={HomeIcon}
       ></ButtonPrimaryNavbar>
-      <User username="Guest" imagePath={PhotoIcon} />
+      <User
+        username="Guest"
+        imagePath={PhotoIcon}
+        imageStyle={{ height: 75}}
+        usernameStyle={{ fontSize: 20 }}
+      />
       <NavbarHidden />
       <ButtonCloseSidebar onClick={onCloseSidebar}></ButtonCloseSidebar>
     </SidebarHiddenWrapper>

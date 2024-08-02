@@ -11,7 +11,7 @@ import ButtonPrimaryNavbarProps from "./types"
 export default function ButtonPrimaryNavbar({
   name,
   type = "button",
-  path = "/",
+  path,
   src,
 }: ButtonPrimaryNavbarProps) {
   return (

@@ -3,14 +3,13 @@ import styled from "@emotion/styled"
 export const ButtonPrimaryComponent = styled.button`
   display: flex;
   width: fit-content;
-  padding: 20px 60px;
+  padding: 20px 30px;
   justify-content: center;
   align-items: center;
   background-color: transparent;
   border-radius: 15px;
   outline: none;
   border: none;
-  font-size: 16px;
   font-family: "Montserrat";
   font-weight: 800;
   letter-spacing: 1px;

@@ -2,6 +2,10 @@ import styled from "@emotion/styled"
 
 import { colors } from "styles/colors"
 
+export const InputCheckboxContainer = styled.div`
+  display: inline-flex;
+`
+
 export const InputCheckboxLabel = styled.label`
   font-weight: 800;
   font-family: "Montserrat";
@@ -22,8 +26,4 @@ export const ErrorContainer = styled.div`
   width: 65px;
   height: 16px;
   margin-left: 15px;
-`
-
-export const InputCheckboxContainer = styled.div`
-  display: inline-flex;
 `

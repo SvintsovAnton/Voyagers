@@ -5,5 +5,5 @@ export default interface InputProps {
   type?: string
   value: string | readonly string[]
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  error?: undefined | string
+  error?: undefined | string | boolean
 }
