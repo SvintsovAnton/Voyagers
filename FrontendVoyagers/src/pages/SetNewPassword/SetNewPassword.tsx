@@ -1,5 +1,6 @@
 import { useFormik } from "formik"
 import * as Yup from "yup"
+
 import { useAppDispatch } from "store/hooks"
 
 import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
@@ -16,13 +17,23 @@ import {
 
 export default function SetNewPassword() {
   const schema = Yup.object().shape({
-    password: Yup.string().required("password is required"),
+    password: Yup.string()
+      .required()
+      .min(8)
+      .matches(/[a-zA-Z]/, "*password must contain at least one letter")
+      .matches(/\d/, "*password must contain at least one number")
+      .matches(/[A-Z]/, "*password must contain at least one uppercase letter"),
+    confirmPassword: Yup.string().oneOf(
+      [Yup.ref("password")],
+      "Passwords must match",
+    ),
   })
 
   const dispatch = useAppDispatch()
   const formik = useFormik({
     initialValues: {
       password: "",
+      confirmPassword: "",
     },
     validationSchema: schema,
     onSubmit: values => {
@@ -47,13 +58,13 @@ export default function SetNewPassword() {
             error={formik.errors.password}
           />
           <Input
-            id="password"
-            name="password"
+            id="confirmPassword"
+            name="confirmPassword"
             label="confirm new password"
             type="password"
-            value={formik.values.password}
+            value={formik.values.confirmPassword}
             onChange={formik.handleChange}
-            error={formik.errors.password}
+            error={formik.errors.confirmPassword}
           />
           <ButtonContainer>
             <Button name="CHANGE PASSWORD" type="submit" />

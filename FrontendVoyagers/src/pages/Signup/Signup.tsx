@@ -3,6 +3,7 @@ import { useState } from "react"
 
 import { useFormik } from "formik"
 import * as Yup from "yup"
+import { differenceInYears } from "date-fns"
 
 import { useAppDispatch } from "store/hooks"
 import { usersRegisterSliceActions } from "store/redux/usersRegister/usersRegisterSlice"
@@ -28,24 +29,39 @@ import {
 
 export default function Signup() {
   const schema = Yup.object().shape({
-    firstName: Yup.string().required("*first name is required"),
-    lastName: Yup.string().required("*last name is required"),
-    dateOfBirth: Yup.date().required("*date of birth is required"),
+    firstName: Yup.string().trim().required("*first name is required").min(3),
+    lastName: Yup.string().trim().required("*last name is required").min(3),
+    dateOfBirth: Yup.date()
+      .required("*date of birth is required")
+      .test(
+        "is-18",
+        "*You must be at least 18 years old",
+        value => differenceInYears(new Date(), new Date(value)) >= 18,
+      ),
     email: Yup.string()
+      .trim()
       .email("*enter a valid email")
-      .required("*email is required"),
-    password: Yup.string().required("*password is required"),
-    // Ensure one of the gender checkboxes is selected
+      .required("*email is required")
+      .min(8)
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "*enter a valid email",
+      ),
+    password: Yup.string()
+      .trim()
+      .required("*password is required")
+      .min(8)
+      .matches(/[a-zA-Z]/, "*password must contain at least one letter")
+      .matches(/\d/, "*password must contain at least one number")
+      .matches(/[A-Z]/, "*password must contain at least one uppercase letter"),
     gender: Yup.object()
       .shape({
         id: Yup.string().required("*any of gender is required"),
       })
       .required(),
-    // Ensure the privacy policy and terms of use checkbox is checked
-    termsofuseandprivacypolicy: Yup.bool().oneOf(
-      [true],
-      "You must agree to the terms of use and privacy policy",
-    ),
+    termsofuseandprivacypolicy: Yup.boolean()
+      .required("Required")
+      .oneOf([true], "You must accept the terms"),
   })
 
   // useEffect(() => {fetch("/api/users/register")}, [])
@@ -61,6 +77,7 @@ export default function Signup() {
       phone: "",
       photo: "",
       gender: { id: selectedGender },
+      termsofuseandprivacypolicy: false,
     },
     validationSchema: schema,
     onSubmit: values => {
@@ -70,7 +87,8 @@ export default function Signup() {
         !!values.dateOfBirth &&
         !!values.email &&
         !!values.password &&
-        !!values.gender
+        !!values.gender &&
+        !!values.termsofuseandprivacypolicy
       ) {
         dispatch(usersRegisterSliceActions.addUser(values))
       }
@@ -182,7 +200,7 @@ export default function Signup() {
           </Agreement>
           <Button name="CREATE AN ACCOUNT" type="submit" />
         </SignupForm>
-        <FormRightSideTemplate path={"/users/register"}></FormRightSideTemplate>
+        <FormRightSideTemplate path={"/users/register"} />
       </SignupFormWrapper>
     </SignupPageWrapper>
   )
