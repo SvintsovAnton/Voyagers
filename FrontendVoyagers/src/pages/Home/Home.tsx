@@ -1,5 +1,9 @@
-import MainPageTemplate from "components/MainPageTemplate/MainPageTemplate"
-
+import Header from "components/Header/Header"
+import { HomeWrapper } from "./styles"
 export default function Home() {
-  return <MainPageTemplate></MainPageTemplate>
+  return (
+    <HomeWrapper>
+      <Header></Header>
+    </HomeWrapper>
+  )
 }

@@ -1,12 +1,9 @@
 import { useFormik } from "formik"
 import * as Yup from "yup"
-
 import { useAppDispatch } from "store/hooks"
-
 import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
 import Button from "components/Buttons/Button/Button"
 import Input from "components/Inputs/Input/Input"
-
 import {
   SetNewPasswordPageWrapper,
   SetNewPasswordFormWrapper,
@@ -14,7 +11,6 @@ import {
   SetNewPasswordHeader,
   ButtonContainer,
 } from "./styles"
-
 export default function SetNewPassword() {
   const schema = Yup.object().shape({
     password: Yup.string()
@@ -28,7 +24,6 @@ export default function SetNewPassword() {
       "Passwords must match",
     ),
   })
-
   const dispatch = useAppDispatch()
   const formik = useFormik({
     initialValues: {
@@ -42,7 +37,6 @@ export default function SetNewPassword() {
       }
     },
   })
-
   return (
     <SetNewPasswordPageWrapper>
       <SetNewPasswordFormWrapper>
@@ -70,7 +64,7 @@ export default function SetNewPassword() {
             <Button name="CHANGE PASSWORD" type="submit" />
           </ButtonContainer>
         </SetNewPasswordForm>
-        <FormRightSideTemplate path="/auth/login/setnewpassword"></FormRightSideTemplate>
+        <FormRightSideTemplate />
       </SetNewPasswordFormWrapper>
     </SetNewPasswordPageWrapper>
   )

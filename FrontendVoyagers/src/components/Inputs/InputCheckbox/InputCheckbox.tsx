@@ -4,9 +4,7 @@ import {
   InputCheckboxComponent,
   ErrorContainer,
 } from "./styles"
-
 import InputCheckboxProps from "./types"
-
 export default function InputCheckbox({
   id,
   name,

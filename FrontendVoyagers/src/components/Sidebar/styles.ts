@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 
 import { colors } from "styles/colors"
 
-export const SidebarWrapper = styled.div`
+export const SidebarWrapper = styled.div<{ isOpen: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -12,7 +12,8 @@ export const SidebarWrapper = styled.div`
   background-color: white;
   border-radius: 0px 50px 50px 0px;
   z-index: 10000;
-  transition: all 0.2s ease-in;
+  transition: all 0.3s ease;
+  transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   position: relative;
 `
 
@@ -24,7 +25,7 @@ export const Logo = styled.h1`
   letter-spacing: 3px;
   color: ${colors.secondaryBlue};
   padding: 5px 20px;
-  border-radius: 15px;
+  border-radius: 14px;
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
   }
@@ -37,7 +38,7 @@ export const Logo = styled.h1`
 export const ButtonCloseSidebar = styled.button`
   outline: none;
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
   background-color: ${colors.secondaryBlue};
   transition: all 0.2s ease;
   position: absolute;

@@ -1,13 +1,9 @@
-import { useState } from "react"
-
 import {
   InputSearchComponent,
   IconContainer,
   InputSearchContainer,
 } from "./styles"
-
 import InputSearchProps from "./types"
-
 export default function InputSearch({
   id,
   name,
@@ -17,6 +13,7 @@ export default function InputSearch({
   alt,
   value,
   onChange,
+  inputComponentStyle,
 }: InputSearchProps) {
   return (
     <InputSearchContainer>
@@ -28,6 +25,7 @@ export default function InputSearch({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        style={inputComponentStyle}
       />
     </InputSearchContainer>
   )

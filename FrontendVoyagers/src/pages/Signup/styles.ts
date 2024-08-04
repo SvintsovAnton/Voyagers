@@ -16,6 +16,8 @@ export const SignupFormWrapper = styled.div`
   height: 85vh;
   border-radius: 50px;
   background-color: ${colors.primaryGrey};
+  /* background: url() no-repeat center center;
+  background-size: cover; */
 `
 
 export const SignupForm = styled.form`
