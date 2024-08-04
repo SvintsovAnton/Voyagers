@@ -1,7 +1,7 @@
+import { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "store/createAppSlice"
 
 import { EventData, EventSliceState } from "./types"
-import { PayloadAction } from "@reduxjs/toolkit"
 
 const eventsSliceInitialState = {
   events: [],

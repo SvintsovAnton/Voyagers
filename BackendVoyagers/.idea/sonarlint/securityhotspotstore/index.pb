@@ -13,3 +13,9 @@ r
 Bevents/src/main/java/group9/events/controller/EventController.java,1\5\1549e2213e09c0390ecbed1c4d730698854f7f19
 
 Oevents/src/main/java/group9/events/security/security_config/SecurityConfig.java,a\a\aaab33e95cb542383ee681818d453c84db12da68
+~
+Nevents/src/main/java/group9/events/security/sec_controller/AuthController.java,f\8\f8c2553964ec6d65930f6772583153e737055e70
+x
+Hevents/src/main/java/group9/events/security/sec_service/AuthService.java,b\7\b74719d08c5635729c76c7a5929e22cc484bc87d
+w
+Gevents/src/main/java/group9/events/security/sec_filter/TokenFilter.java,f\0\f06c080b9a09092451fafc6013dd37ab60fabe0b

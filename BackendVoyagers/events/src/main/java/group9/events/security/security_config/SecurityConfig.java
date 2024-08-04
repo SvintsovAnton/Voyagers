@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/auth/forgot-password").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/auth/reset-password").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN")

@@ -2,6 +2,15 @@ import styled from "@emotion/styled"
 
 import { colors } from "styles/colors"
 
+export const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  gap: 4px;
+  width: 100%;
+  position: relative;
+`
+
 export const InputLabel = styled.p`
   font-size: 18px;
   font-family: "Montserrat";
@@ -21,7 +30,9 @@ export const InputComponent = styled.input<{ error?: boolean }>`
   background-color: white;
   font-family: "Montserrat";
   color: ${colors.secondaryGrey};
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow:
+    0 4px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
   transition: all 0.2s ease;
   &:hover {
     border-color: grey;
@@ -31,7 +42,8 @@ export const InputComponent = styled.input<{ error?: boolean }>`
 export const IconContainer = styled.img`
   display: flex;
   flex-direction: row-reverse;
-  margin: 35px 0px 0px 405px;
+  left: 90%;
+  top: 55%;
   width: 10%;
   height: 20px;
   position: absolute;
@@ -43,15 +55,7 @@ export const ErrorContainer = styled.div`
   font-family: "Montserrat";
   font-weight: 600;
   color: ${colors.secondaryRed};
+  transition: all 0.2s ease;
   height: 6px;
   margin-left: 15px;
-`
-
-export const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 15px;
-  gap: 4px;
-  width: 100%;
-  position: relative;
 `

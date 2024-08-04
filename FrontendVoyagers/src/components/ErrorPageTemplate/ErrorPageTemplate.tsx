@@ -4,9 +4,7 @@ import {
   ErrorType,
   Description,
 } from "./styles";
-
 import ErrorPageTemplateProps from "./types";
-
 const ErrorPageTemplate: React.FC<ErrorPageTemplateProps> = ({ errorType, description }) => {
   return (
     <ErrorPageTemplateWrapper>
@@ -17,5 +15,4 @@ const ErrorPageTemplate: React.FC<ErrorPageTemplateProps> = ({ errorType, descri
     </ErrorPageTemplateWrapper>
   );
 };
-
 export default ErrorPageTemplate;

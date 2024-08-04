@@ -1,18 +1,14 @@
 import { useState } from "react"
-
 import {
+  InputContainer,
   InputLabel,
   InputComponent,
   IconContainer,
   ErrorContainer,
-  InputContainer,
 } from "./styles"
-
 import InputProps from "./types"
-
 import EyeIcon from "assets/eye-icon.svg"
 import EyeOffIcon from "assets/eye-off-icon.svg"
-
 export default function Input({
   id,
   name,
@@ -23,11 +19,9 @@ export default function Input({
   error,
 }: InputProps) {
   const [isPasswordVisible, setPasswordVisible] = useState(false)
-
   const togglePasswordVisibility = () => {
     setPasswordVisible(!isPasswordVisible)
   }
-
   return (
     <InputContainer>
       {label && <InputLabel>{label}</InputLabel>}

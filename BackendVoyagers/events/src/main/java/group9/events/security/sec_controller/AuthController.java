@@ -40,6 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+
     public TokenResponseDto login(@RequestBody User user,  HttpServletResponse response) {
         try {
             TokenResponseDto tokenResponseDto = service.login(user);
@@ -61,9 +62,21 @@ public class AuthController {
 
 
     @GetMapping("/logout")
-    public void logout(HttpServletResponse response) {
+    public void logout(
+            HttpServletResponse response
+    ) {
         removeCookie(response);
     }
+
+    private void removeCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("Access-Token", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
+
 
     @GetMapping("/profile")
     public ResponseEntity<UserDto> getProfile() {
@@ -87,11 +100,11 @@ public class AuthController {
 
     @PutMapping("/reset-password")
     public UserDto resetPassword(@RequestParam("code") String token, @RequestBody RestorePasswordRequest request) {
-        return userService.resetPassword(token,request);
+        return userService.resetPassword(token, request);
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<UserDto> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest){
+    public ResponseEntity<UserDto> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         return ResponseEntity.ok(userService.forgotPassword(forgotPasswordRequest.getEmail()));
 
     }
