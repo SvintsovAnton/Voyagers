@@ -1,8 +1,8 @@
 
 ‡
-java:S11924"FDefine a constant instead of duplicating this literal "ADMIN" 3 times.(Š²ÉÿÿÿÿÿJ$10c9a718-9228-447f-a025-e65790494eeb
-•	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Ú”¼ÊJ$43b3a995-638a-4cf2-a509-83f59ae8f962
+java:S11924"FDefine a constant instead of duplicating this literal "ADMIN" 3 times.(Š²ÉÿÿÿÿÿJ$9ef702b2-ad4b-4b1b-a909-b1db0e5a57d6
+•	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Ú”¼ÊJ$e6ae2de0-2157-44a4-9767-b86be32577c6
 “
-java:S1128"KRemove this unused import 'org.springframework.security.config.Customizer'.(Ïóœ¬ùÿÿÿÿ8Ûò²‘2J$3f402c14-8b14-4bd6-9bfd-515ece003b48
+java:S1128"KRemove this unused import 'org.springframework.security.config.Customizer'.(Ïóœ¬ùÿÿÿÿ8Ûò²‘2J$b03a1040-18c3-4241-b1d5-2267e56b3a4a
 ¾
-java:S1128"{Remove this unused import 'org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity'.(Ô¦ø8Üò²‘2J$abc6906c-31c7-4234-90cb-67b8e58d5641
+java:S1128"{Remove this unused import 'org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity'.(Ô¦ø8Üò²‘2J$dbd87d2e-0dc7-46e6-8e25-f74efbadaec8
