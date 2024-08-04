@@ -120,12 +120,4 @@ public class AuthController {
     }
 
 
-    private void removeCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie("Access-Token", null);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-    }
-
 }
