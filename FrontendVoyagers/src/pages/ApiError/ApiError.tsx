@@ -1,5 +1,4 @@
 import ErrorPageTemplate from "components/ErrorPageTemplate/ErrorPageTemplate"
-
 export default function ApiError() {
   return (
     <ErrorPageTemplate

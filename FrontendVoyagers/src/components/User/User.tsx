@@ -1,6 +1,5 @@
 import { UserComponent, UserImage, Username } from "./styles"
 import UserProps from "./types"
-
 export default function User({
   username,
   imagePath,

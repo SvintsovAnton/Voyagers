@@ -1,18 +1,14 @@
 import { useState } from "react"
-// import { useEffect } from "react"
-
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { differenceInYears } from "date-fns"
-
 import { useAppDispatch } from "store/hooks"
-import { usersRegisterSliceActions } from "store/redux/usersRegister/usersRegisterSlice"
-
+import { register } from "store/redux/auth/authSlice"
+import { useNavigate } from "react-router-dom"
 import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
 import Button from "components/Buttons/Button/Button"
 import Input from "components/Inputs/Input/Input"
 import InputCheckbox from "components/Inputs/InputCheckbox/InputCheckbox"
-
 import {
   SignupPageWrapper,
   SignupFormWrapper,
@@ -26,7 +22,6 @@ import {
   TermsOfUse,
   PrivacyPolicy,
 } from "./styles"
-
 export default function Signup() {
   const schema = Yup.object().shape({
     firstName: Yup.string().trim().required("*first name is required").min(3),
@@ -63,10 +58,9 @@ export default function Signup() {
       .required("Required")
       .oneOf([true], "You must accept the terms"),
   })
-
-  // useEffect(() => {fetch("/api/users/register")}, [])
-  const dispatch = useAppDispatch()
   const [selectedGender, setSelectedGender] = useState("")
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -80,7 +74,7 @@ export default function Signup() {
       termsofuseandprivacypolicy: false,
     },
     validationSchema: schema,
-    onSubmit: values => {
+    onSubmit: async values => {
       if (
         !!values.firstName &&
         !!values.lastName &&
@@ -90,16 +84,19 @@ export default function Signup() {
         !!values.gender &&
         !!values.termsofuseandprivacypolicy
       ) {
-        dispatch(usersRegisterSliceActions.addUser(values))
+        try {
+          await dispatch(register(values)).unwrap()
+          navigate("/auth/login")
+        } catch (error) {
+          formik.setErrors({ password: "Signup failed. Please try again." })
+        }
       }
     },
   })
-
   const handleGenderChange = (id: string) => {
     setSelectedGender(id)
     formik.setFieldValue("gender", { id })
   }
-
   return (
     <SignupPageWrapper>
       <SignupFormWrapper>
@@ -200,7 +197,7 @@ export default function Signup() {
           </Agreement>
           <Button name="CREATE AN ACCOUNT" type="submit" />
         </SignupForm>
-        <FormRightSideTemplate path={"/users/register"} />
+        <FormRightSideTemplate />
       </SignupFormWrapper>
     </SignupPageWrapper>
   )

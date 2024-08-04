@@ -4,6 +4,7 @@ import { colors } from "styles/colors"
 
 export const InputCheckboxContainer = styled.div`
   display: inline-flex;
+  transition: all 0.1s ease;
 `
 
 export const InputCheckboxLabel = styled.label`
@@ -23,6 +24,7 @@ export const ErrorContainer = styled.div`
   font-family: "Montserrat";
   font-weight: 600;
   color: ${colors.secondaryRed};
+  transition: all 0.2s ease;
   width: 65px;
   height: 16px;
   margin-left: 15px;

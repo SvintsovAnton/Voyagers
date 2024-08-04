@@ -7,4 +7,5 @@ export default interface InputSearchProps {
     alt: string
     value: string
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+    inputComponentStyle?: React.CSSProperties | undefined
 }

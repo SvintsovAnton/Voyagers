@@ -5,4 +5,7 @@ export default interface ButtonPrimaryNavbarProps {
   type?: ButtonTypes
   path: string
   src: string
+  isSelected: boolean
+  onClick?: () => void
+  buttonComponentStyle?: React.CSSProperties | undefined
 }

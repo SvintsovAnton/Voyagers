@@ -21,7 +21,7 @@ export const InputSearchComponent = styled.input`
   box-shadow:
     0 4px 8px 0 rgba(0, 0, 0, 0.1),
     0 6px 20px 0 rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
   &:hover {
     border-color: grey;
   }

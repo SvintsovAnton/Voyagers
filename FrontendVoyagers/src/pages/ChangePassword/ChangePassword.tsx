@@ -1,14 +1,10 @@
 import { useState } from "react"
-
 import { useFormik } from "formik"
 import * as Yup from "yup"
-
 import { useAppDispatch } from "store/hooks"
-
 import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
 import Button from "components/Buttons/Button/Button"
 import Input from "components/Inputs/Input/Input"
-
 import {
   ChangePasswordPageWrapper,
   ChangePasswordFormWrapper,
@@ -20,16 +16,12 @@ import {
   ModalOverlay,
   ModalContent,
 } from "./styles"
-
 import { Greetings } from "components/FormRightSideTemplate/styles"
-
 export default function ChangePassword() {
   const [isModalOpen, setIsModalOpen] = useState(false)
-
   const schema = Yup.object().shape({
     email: Yup.string().required("email is required"),
   })
-
   const dispatch = useAppDispatch()
   const formik = useFormik({
     initialValues: {
@@ -43,11 +35,9 @@ export default function ChangePassword() {
       }
     },
   })
-
   const closeModal = () => {
     setIsModalOpen(false)
   }
-
   return (
     <ChangePasswordPageWrapper>
       <ChangePasswordFormWrapper>
@@ -70,7 +60,7 @@ export default function ChangePassword() {
             <Button name="SEND ME A CODE" type="submit" />
           </ButtonContainer>
         </ChangePasswordForm>
-        <FormRightSideTemplate path="/auth/login/changepassword"></FormRightSideTemplate>
+        <FormRightSideTemplate />
       </ChangePasswordFormWrapper>
       {isModalOpen && (
         <ModalOverlay>

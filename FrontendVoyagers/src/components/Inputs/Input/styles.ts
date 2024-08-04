@@ -55,6 +55,7 @@ export const ErrorContainer = styled.div`
   font-family: "Montserrat";
   font-weight: 600;
   color: ${colors.secondaryRed};
+  transition: all 0.2s ease;
   height: 6px;
   margin-left: 15px;
 `

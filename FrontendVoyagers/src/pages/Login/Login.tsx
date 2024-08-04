@@ -1,13 +1,11 @@
 import { useFormik } from "formik"
 import * as Yup from "yup"
-
 import { useAppDispatch } from "store/hooks"
-import { usersLoginSliceActions } from "store/redux/usersLogin/usersLoginSlice"
-
+import { login } from "store/redux/auth/authSlice"
+import { useNavigate } from "react-router-dom"
 import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
 import Button from "components/Buttons/Button/Button"
 import Input from "components/Inputs/Input/Input"
-
 import {
   LoginPageWrapper,
   LoginFormWrapper,
@@ -17,28 +15,33 @@ import {
   Signup,
   ForgotPassword,
 } from "./styles"
-import { login } from "store/redux/auth/authSlice"
-
 export default function Login() {
   const schema = Yup.object().shape({
     email: Yup.string().required(),
     password: Yup.string().required(),
   })
-
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     validationSchema: schema,
-    onSubmit: values => {
+    onSubmit: async values => {
       if (!!values.email && !!values.password) {
-        dispatch(login(values))
+        try {
+          await dispatch(login(values)).unwrap()
+          navigate("/events/active")
+        } catch (error) {
+          formik.setErrors({
+            email: "Invalid email or password. Please try again.",
+            password: "Invalid email or password. Please try again.",
+          })
+        }
       }
     },
   })
-
   return (
     <LoginPageWrapper>
       <LoginFormWrapper>
@@ -71,7 +74,7 @@ export default function Login() {
           </ForgotPassword>
           <Button name="LOG IN" type="submit" />
         </LoginForm>
-        <FormRightSideTemplate path="/auth/login"></FormRightSideTemplate>
+        <FormRightSideTemplate />
       </LoginFormWrapper>
     </LoginPageWrapper>
   )

@@ -1,4 +1,4 @@
-import type { Credentials } from "./types"
+import type { Credentials, UserRegistrationDto } from "./types"
 export const fetchLogin = async (credentials: Credentials) => {
   const res = await fetch("/api/auth/login", {
     method: "POST",
@@ -29,14 +29,14 @@ export const fetchProfile = async () => {
   }
   return res.json()
 }
-export const fetchRegister = async (credentials: Credentials) => {
-  const res = await fetch("/api/users", {
+export const fetchRegister = async (dto: UserRegistrationDto) => {
+  const res = await fetch("/api/users/register", {
     method: "POST",
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(dto),
   })
   return res.json()
 }
