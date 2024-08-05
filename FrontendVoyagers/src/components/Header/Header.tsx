@@ -5,9 +5,7 @@ import { logout } from "store/redux/auth/authSlice"
 import { useAppSelector } from "store/hooks"
 import { selectUser } from "store/redux/auth/authSlice"
 import { Title, Greetings } from "components/FormRightSideTemplate/styles"
-import InputSearch from "components/Inputs/InputSearch/InputSearch"
-import Button from "components/Buttons/Button/Button"
-import ButtonPrimaryNavbar from "components/Buttons/ButtonPrimaryNavbar/ButtonPrimaryNavbar"
+import { InputSearch, Button, ButtonPrimaryNavbar } from "components/index"
 import {
   HeaderBarContainer,
   SearchBarContainer,
@@ -15,9 +13,7 @@ import {
   ButtonsContainer,
   ButtonContainer,
 } from "./styles"
-import SearchIcon from "assets/search-icon.svg"
-import LocationIcon from "assets/location-icon.svg"
-import CreateEvent from "assets/create-event.svg"
+import { SearchIcon, LocationIcon, CreateEventIcon } from "assets/index"
 export default function Header() {
   const user = useAppSelector(selectUser)
   const dispatch = useAppDispatch()
@@ -93,7 +89,7 @@ export default function Header() {
         {user && (
           <ButtonPrimaryNavbar
             path="/events"
-            src={CreateEvent}
+            src={CreateEventIcon}
             isSelected={selectedButton === 8}
             onClick={() => handleButtonClick(8)}
             buttonComponentStyle={{ padding: 4, gap: 0 }}

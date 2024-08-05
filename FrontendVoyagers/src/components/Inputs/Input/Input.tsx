@@ -7,8 +7,7 @@ import {
   ErrorContainer,
 } from "./styles"
 import InputProps from "./types"
-import EyeIcon from "assets/eye-icon.svg"
-import EyeOffIcon from "assets/eye-off-icon.svg"
+import { EyeIcon, EyeOffIcon } from "assets/index"
 export default function Input({
   id,
   name,

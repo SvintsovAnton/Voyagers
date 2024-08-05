@@ -1,4 +1,4 @@
-import Header from "components/Header/Header"
+import { Header } from "components/index"
 import { MyEventsWrapper } from "./styles"
 export default function MyEvents() {
   return (

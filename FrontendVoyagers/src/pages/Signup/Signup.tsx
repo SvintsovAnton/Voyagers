@@ -5,10 +5,7 @@ import { differenceInYears } from "date-fns"
 import { useAppDispatch } from "store/hooks"
 import { register } from "store/redux/auth/authSlice"
 import { useNavigate } from "react-router-dom"
-import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
-import Button from "components/Buttons/Button/Button"
-import Input from "components/Inputs/Input/Input"
-import InputCheckbox from "components/Inputs/InputCheckbox/InputCheckbox"
+import { FormRightSideTemplate, Button, Input, InputCheckbox } from "components/index"
 import {
   SignupPageWrapper,
   SignupFormWrapper,

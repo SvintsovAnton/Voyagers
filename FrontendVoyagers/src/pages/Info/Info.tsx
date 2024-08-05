@@ -1,5 +1,5 @@
 import { InfoWrapper } from "./styles"
-export default function Settings() {
+export default function Info() {
   return (
     <InfoWrapper>
       Welcome to Voyagers! 🌍 Welcome to an application designed to bring people
