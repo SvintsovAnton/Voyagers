@@ -2,9 +2,7 @@ import { useState } from "react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useAppDispatch } from "store/hooks"
-import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
-import Button from "components/Buttons/Button/Button"
-import Input from "components/Inputs/Input/Input"
+import { FormRightSideTemplate, Button, Input } from "components/index"
 import {
   ChangePasswordPageWrapper,
   ChangePasswordFormWrapper,

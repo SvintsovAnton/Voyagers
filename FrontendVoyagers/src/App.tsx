@@ -3,20 +3,22 @@ import { useAppDispatch, useAppSelector } from "store/hooks"
 import { profile, selectIsAuthenticated } from "store/redux/auth/authSlice"
 import { useEffect, useState } from "react"
 import { selectUser } from "store/redux/auth/authSlice"
-import Sidebar from "components/Sidebar/Sidebar"
-import SidebarHidden from "components/SidebarHidden/SidebarHidden"
-import Home from "pages/Home/Home"
-import Profile from "pages/Profile/Profile"
-import MyEvents from "pages/MyEvents/MyEvents"
-import History from "pages/History/History"
-import Settings from "pages/Settings/Settings"
-import Info from "pages/Info/Info"
-import About from "pages/About/About"
-import Signup from "pages/Signup/Signup"
-import Login from "pages/Login/Login"
-import ChangePassword from "pages/ChangePassword/ChangePassword"
-import SetNewPassword from "pages/SetNewPassword/SetNewPassword"
-import PageNotFound from "pages/PageNotFound/PageNotFound"
+import { Sidebar, SidebarHidden } from "components/index"
+import {
+  Home,
+  Profile,
+  MyEvents,
+  History,
+  Settings,
+  Info,
+  About,
+  CreateEvent,
+  Signup,
+  Login,
+  ChangePassword,
+  SetNewPassword,
+  PageNotFound,
+} from "pages/index"
 export default function App() {
   const isAuthorized = useAppSelector(selectIsAuthenticated)
   const dispatch = useAppDispatch()
@@ -49,7 +51,7 @@ export default function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/info" element={<Info />} />
         <Route path="/about" element={<About />} />
-        <Route path="/events" element="CREATE EVENT" />
+        <Route path="/events" element={<CreateEvent />} />
         <Route path="/users/register" element={<Signup />} />
         <Route path="/info/termsofuse" element="Terms Of Use" />
         <Route path="/info/privacypolicy" element="Privacy Policy" />
