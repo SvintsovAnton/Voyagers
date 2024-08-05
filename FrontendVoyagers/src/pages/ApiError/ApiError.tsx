@@ -1,4 +1,4 @@
-import ErrorPageTemplate from "components/ErrorPageTemplate/ErrorPageTemplate"
+import { ErrorPageTemplate } from "components/index"
 export default function ApiError() {
   return (
     <ErrorPageTemplate

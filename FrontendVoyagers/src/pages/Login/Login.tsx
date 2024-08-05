@@ -3,9 +3,7 @@ import * as Yup from "yup"
 import { useAppDispatch } from "store/hooks"
 import { login } from "store/redux/auth/authSlice"
 import { useNavigate } from "react-router-dom"
-import FormRightSideTemplate from "components/FormRightSideTemplate/FormRightSideTemplate"
-import Button from "components/Buttons/Button/Button"
-import Input from "components/Inputs/Input/Input"
+import { FormRightSideTemplate, Button, Input } from "components/index"
 import {
   LoginPageWrapper,
   LoginFormWrapper,

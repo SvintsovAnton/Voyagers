@@ -1,12 +1,14 @@
 import { useState } from "react"
-import ButtonPrimaryNavbar from "components/Buttons/ButtonPrimaryNavbar/ButtonPrimaryNavbar"
+import { ButtonPrimaryNavbar } from "components/index"
 import { NavbarComponent } from "./styles"
-import UserIcon from "assets/user-icon.svg"
-import EventsIcon from "assets/events-icon.svg"
-import HistoryIcon from "assets/history-icon.svg"
-import SettingsIcon from "assets/settings-icon.svg"
-import InfoIcon from "assets/info-icon.svg"
-import AboutIcon from "assets/about-icon.svg"
+import {
+  ProfileIcon,
+  MyEventsIcon,
+  HistoryIcon,
+  SettingsIcon,
+  InfoIcon,
+  AboutIcon,
+} from "assets/index"
 export default function Navbar() {
   const [selectedButton, setSelectedButton] = useState(null)
   const handleButtonClick = (index: any) => {
@@ -17,14 +19,14 @@ export default function Navbar() {
       <ButtonPrimaryNavbar
         name="Profile"
         path="/profile"
-        src={UserIcon}
+        src={ProfileIcon}
         isSelected={selectedButton === 2}
         onClick={() => handleButtonClick(2)}
       />
       <ButtonPrimaryNavbar
         name="My Events"
         path="/events/myevents"
-        src={EventsIcon}
+        src={MyEventsIcon}
         isSelected={selectedButton === 3}
         onClick={() => handleButtonClick(3)}
       />

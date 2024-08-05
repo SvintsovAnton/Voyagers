@@ -1,9 +1,8 @@
-import ButtonPrimaryNavbar from "components/Buttons/ButtonPrimaryNavbar/ButtonPrimaryNavbar"
-import NavbarHidden from "components/NavbarHidden/NavbarHidden"
+import { ButtonPrimaryNavbar, NavbarHidden } from "components/index"
 import { ButtonCloseSidebar } from "components/Sidebar/styles"
 import { SidebarHiddenWrapper } from "./styles"
 import SidebarHiddenProps from "./types"
-import HomeIcon from "assets/home-icon.svg"
+import { HomeIcon } from "assets/index"
 export default function SidebarHidden({
   isOpen,
   onCloseSidebar,

@@ -43,7 +43,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public TokenResponseDto login(@RequestBody User user, HttpServletResponse response) {
-    public TokenResponseDto login(@RequestBody User user,  HttpServletResponse response) {
         try {
             TokenResponseDto tokenResponseDto = service.login(user);
             Cookie cookieAccess = new Cookie("Access-Token", tokenResponseDto.getAccessToken());
@@ -55,23 +54,10 @@ public class AuthController {
             cookieRefresh.setPath("/");
             cookieRefresh.setHttpOnly(true);
             response.addCookie(cookieRefresh);
-
-            TokenResponseDto tokenResponseDto = service.login(user);
-            Cookie cookieAccess = new Cookie("Access-Token", tokenResponseDto.getAccessToken());
-            cookieAccess.setPath("/");
-            cookieAccess.setHttpOnly(true);
-            response.addCookie(cookieAccess);
             return service.login(user);
         } catch (AuthException e) {
             throw new UserNotAuthenticatedException("user don´t authenticated");
         }
-    }
-
-    @GetMapping("/logout")
-    public void logout(
-            HttpServletResponse response
-    ) {
-        removeCookie(response);
     }
 
     private void removeCookie(HttpServletResponse response) {
@@ -81,7 +67,6 @@ public class AuthController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
-
 
     @GetMapping("/logout")
     public void logout(HttpServletResponse response) {
