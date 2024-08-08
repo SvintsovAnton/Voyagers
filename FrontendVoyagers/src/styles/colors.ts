@@ -1,4 +1,5 @@
 interface Colors {
+  primaryWhite: string
   primaryBlue: string
   secondaryBlue: string
   tertiaryBlue: string
@@ -11,6 +12,7 @@ interface Colors {
 }
 
 export const colors: Colors = {
+  primaryWhite: "rgb(240, 240, 240)",
   primaryBlue: "rgb(138, 175, 208)",
   secondaryBlue: "rgb(0, 123, 255)",
   tertiaryBlue: "rgb(0, 103, 255)",

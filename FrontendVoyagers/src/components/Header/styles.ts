@@ -3,7 +3,6 @@ import { colors } from "styles/colors"
 
 export const HeaderBarContainer = styled.div`
   display: flex;
-  align-items: center;
   width: 100%;
   height: fit-content;
   justify-content: space-between;
@@ -27,6 +26,7 @@ gap: 40px;
 
 export const ButtonsContainer = styled.div`
   display: flex;
+  align-self: start;
   gap: 30px;
 `
 

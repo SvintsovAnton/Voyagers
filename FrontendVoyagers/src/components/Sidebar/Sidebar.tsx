@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
 import { User, Navbar } from "components/index"
-import { UserTestImg } from "assets/index"
 import { SidebarWrapper, Logo, ButtonCloseSidebar } from "./styles"
 import SidebarProps from "./types"
+import { UserTestImg } from "assets/index"
 export default function Sidebar({ isOpen, onCloseSidebar }: SidebarProps) {
   return (
     <SidebarWrapper isOpen={isOpen}>
@@ -11,7 +11,7 @@ export default function Sidebar({ isOpen, onCloseSidebar }: SidebarProps) {
       </Link>
       <User username="Guest" imagePath={UserTestImg} />
       <Navbar />
-      <ButtonCloseSidebar onClick={onCloseSidebar}></ButtonCloseSidebar>
+      <ButtonCloseSidebar onClick={onCloseSidebar}/>
     </SidebarWrapper>
   )
 }

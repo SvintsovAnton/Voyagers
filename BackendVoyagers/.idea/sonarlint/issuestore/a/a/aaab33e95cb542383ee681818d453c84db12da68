@@ -2,3 +2,7 @@
 ‡
 java:S11924"FDefine a constant instead of duplicating this literal "ADMIN" 3 times.(Š²ÉÿÿÿÿÿJ$970812ff-02bc-4ad9-91f3-29cdccc3f40d
 •	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Ú”¼ÊJ$5ce52e28-047a-4a6b-a075-ce2dd9895edd
+m
+java:S1128"KRemove this unused import 'org.springframework.security.config.Customizer'.(Ïóœ¬ùÿÿÿÿ8•¤Ê’’2
+˜
+java:S1128"{Remove this unused import 'org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity'.(Ô¦ø8–¤Ê’’2

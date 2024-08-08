@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom"
 import { RightSide, Title, Greetings } from "./styles"
-export default function FormRightSideTemplate() {
+import { FormRightSideTemplateProps } from "./types"
+export default function FormRightSideTemplate({title = "Voyagers",
+  greetingsMessage = "Welcome back to VOYAGERS!",
+}: FormRightSideTemplateProps) {
   return (
     <RightSide>
       <Link to={"/events/active"} style={{ textDecoration: "none" }}>
-        <Title>Voyagers</Title>
+        <Title>{title}</Title>
       </Link>
-      <Greetings>Welcome to VOYAGERS!</Greetings>
+      <Greetings>{greetingsMessage}</Greetings>
     </RightSide>
   )
 }

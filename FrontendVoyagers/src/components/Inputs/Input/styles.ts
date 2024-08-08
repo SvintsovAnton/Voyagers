@@ -11,11 +11,11 @@ export const InputContainer = styled.div`
 `
 
 export const InputLabel = styled.p`
-  font-size: 18px;
+  font-size: 20px;
   font-family: "Montserrat";
   font-weight: 800;
   margin-left: 4px;
-  color: ${colors.secondaryGrey};
+  color: black;
 `
 
 export const InputComponent = styled.input<{ error?: boolean }>`

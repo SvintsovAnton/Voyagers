@@ -29,14 +29,14 @@ export const fetchProfile = async () => {
   }
   return res.json()
 }
-export const fetchRegister = async (dto: UserRegistrationDto) => {
+export const fetchRegister = async (userDto: UserRegistrationDto) => {
   const res = await fetch("/api/users/register", {
     method: "POST",
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(dto),
+    body: JSON.stringify(userDto),
   })
   return res.json()
 }
