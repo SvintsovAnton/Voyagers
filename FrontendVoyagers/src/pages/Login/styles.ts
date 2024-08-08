@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import { colors } from "styles/colors"
+import { FormBackground } from "assets"
 
 export const LoginPageWrapper = styled.div`
   display: flex;
@@ -15,7 +16,10 @@ export const LoginFormWrapper = styled.div`
   min-width: 60vw;
   height: 70vh;
   border-radius: 50px;
-  background-color: ${colors.primaryGrey};
+  background-image: url(${FormBackground});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 `
 
 export const LoginForm = styled.form`

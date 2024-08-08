@@ -1,13 +1,9 @@
-export interface EventData {
+export interface CreateEventDto {
   title: string
-  activityType: string
-  adressStart: string
-  timeStart: number
-  adressEnd: string
-  timeEnd: number
-  cost: number
-}
-
-export interface EventSliceState {
-  events: EventData[]
+  addressStart: string
+  startDateTime: string
+  addressEnd: string
+  endDateTime: string
+  cost: string
+  maximalNumberOfParticipants: string
 }

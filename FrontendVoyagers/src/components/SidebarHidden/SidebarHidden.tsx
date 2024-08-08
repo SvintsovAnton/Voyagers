@@ -13,9 +13,9 @@ export default function SidebarHidden({
         path="/events/active"
         src={HomeIcon}
         isSelected={false}
-      ></ButtonPrimaryNavbar>
+      />
       <NavbarHidden />
-      <ButtonCloseSidebar onClick={onCloseSidebar}></ButtonCloseSidebar>
+      <ButtonCloseSidebar onClick={onCloseSidebar} />
     </SidebarHiddenWrapper>
   )
 }

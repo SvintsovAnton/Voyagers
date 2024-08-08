@@ -8,12 +8,14 @@ export const SidebarWrapper = styled.div<{ isOpen: boolean }>`
   align-items: center;
   height: 100vh;
   padding: 20px;
+  z-index: 10002;
   background-color: white;
-  border-radius: 0px 50px 50px 0px;
-  z-index: 10000;
-  transition: all 0.3s ease;
-  transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
-  position: relative;
+  border-radius: 0px 80px 80px 0px;
+  transition: all 0.3s ease-in-out;
+  transform: translateX(${props => (props.isOpen ? '0' : '-100%')});
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  }
 `
 
 export const Logo = styled.h1`

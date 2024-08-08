@@ -1,9 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import { useAppDispatch, useAppSelector } from "store/hooks"
-import { profile, selectIsAuthenticated } from "store/redux/auth/authSlice"
 import { useEffect, useState } from "react"
-import { selectUser } from "store/redux/auth/authSlice"
-import { Sidebar, SidebarHidden } from "components/index"
+import { BrowserRouter, HashRouter, Routes, Route, Navigate } from "react-router-dom"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import {
+  profile,
+  selectIsAuthorized,
+  selectUser,
+} from "store/redux/auth/authSlice"
+import { Sidebar, SidebarHidden, EventCard } from "components/index"
 import {
   Home,
   Profile,
@@ -20,17 +23,19 @@ import {
   PageNotFound,
 } from "pages/index"
 export default function App() {
-  const isAuthorized = useAppSelector(selectIsAuthenticated)
+  const isAuthorized = useAppSelector(selectIsAuthorized)
   const dispatch = useAppDispatch()
   useEffect(() => {
     dispatch(profile())
   }, [dispatch, isAuthorized])
 
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const user = useAppSelector(selectUser)
+
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   function handleCloseSidebar() {
     setSidebarOpen(isOpen => !isOpen)
   }
+
   return (
     <BrowserRouter>
       {user &&
@@ -46,6 +51,7 @@ export default function App() {
         <Route path="/" element={<Navigate to="/events/active" />} />
         <Route path="/events/active" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/events/:id" element={<EventCard />} />
         <Route path="/events/myevents" element={<MyEvents />} />
         <Route path="/events/history" element={<History />} />
         <Route path="/settings" element={<Settings />} />

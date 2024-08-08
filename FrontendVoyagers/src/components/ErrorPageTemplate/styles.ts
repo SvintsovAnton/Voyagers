@@ -6,7 +6,6 @@ export const ErrorPageTemplateWrapper = styled.div`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: ${colors.tertiaryGrey};
 `
 
 export const ErrorPageTemplateContainer = styled.div`

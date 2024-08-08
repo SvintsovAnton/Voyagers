@@ -1,5 +1,7 @@
 
 ¡	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(äëÈîúÿÿÿÿ8ãßÿý‘2J$e1404656-cfa2-437e-8c4c-60267972b41e
+m
+java:S1128"KRemove this unused import 'group9.events.domain.dto.ChangePasswordRequest'.(–¹®Ýüÿÿÿÿ8“£Ê’’2
 f
 java:S1128"Remove this duplicated import.(Ê‘¡¹úÿÿÿÿ8³àÿý‘2J$c1dce57e-f549-4916-bd46-a3fc81f1044d
 f

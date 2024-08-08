@@ -64,8 +64,8 @@ export const authSlice = createAppSlice({
       },
     ),
     register: create.asyncThunk(
-      async (dto: UserRegistrationDto) => {
-        return api.fetchRegister(dto)
+      async (userDto: UserRegistrationDto) => {
+        return api.fetchRegister(userDto)
         // The value we return becomes the `fulfilled` action payload
       },
       {
@@ -85,7 +85,7 @@ export const authSlice = createAppSlice({
   // You can define your selectors here. These selectors receive the slice
   // state as their first argument.
   selectors: {
-    selectIsAuthenticated: state => state.isAuthorized,
+    selectIsAuthorized: state => state.isAuthorized,
     selectUser: state => state.user,
     // selectRoles: state => state.user?.roles,
   },
@@ -93,4 +93,4 @@ export const authSlice = createAppSlice({
 // // Action creators are generated for each case reducer function.
 export const { login, logout, profile, register } = authSlice.actions
 // Selectors returned by `slice.selectors` take the root state as their first argument.
-export const { selectIsAuthenticated, selectUser } = authSlice.selectors
+export const { selectIsAuthorized, selectUser } = authSlice.selectors

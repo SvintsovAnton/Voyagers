@@ -194,7 +194,7 @@ export default function Signup() {
           </Agreement>
           <Button name="CREATE AN ACCOUNT" type="submit" />
         </SignupForm>
-        <FormRightSideTemplate />
+        <FormRightSideTemplate greetingsMessage="Welcome to VOYAGERS!"/>
       </SignupFormWrapper>
     </SignupPageWrapper>
   )
