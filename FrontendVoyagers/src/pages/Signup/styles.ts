@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import { colors } from "styles/colors"
+import { FormBackground } from "assets"
 
 export const SignupPageWrapper = styled.div`
   display: flex;
@@ -16,8 +17,10 @@ export const SignupFormWrapper = styled.div`
   height: 85vh;
   border-radius: 50px;
   background-color: ${colors.primaryGrey};
-  /* background: url() no-repeat center center;
-  background-size: cover; */
+  background-image: url(${FormBackground});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 `
 
 export const SignupForm = styled.form`

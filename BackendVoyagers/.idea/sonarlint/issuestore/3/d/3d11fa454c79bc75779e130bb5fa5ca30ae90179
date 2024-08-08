@@ -1,0 +1,6 @@
+
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¤ÏÑúÿÿÿÿ
+a
+java:S1128"FRemove this unused import 'jakarta.validation.constraints.DecimalMin'.(±Îôáøÿÿÿÿ
+F
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ

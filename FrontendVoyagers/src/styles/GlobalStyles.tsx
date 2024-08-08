@@ -1,4 +1,5 @@
 import { Global, css } from "@emotion/react"
+import { colors } from "./colors"
 
 const globalStyles = css`
   * {
@@ -10,6 +11,7 @@ const globalStyles = css`
     height: 100%;
     margin: 0;
     padding: 0;
+    background-color: ${colors.primaryBlue};
   }
 
   h1,
@@ -29,6 +31,7 @@ const globalStyles = css`
     display: flex;
     flex: 1;
     height: 100%;
+    
   }
 `
 

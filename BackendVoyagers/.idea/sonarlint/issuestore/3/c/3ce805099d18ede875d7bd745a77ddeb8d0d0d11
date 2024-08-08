@@ -1,2 +1,6 @@
 
 t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(åĞ‚ÿÿÿÿÿ
+\
+java:S1128"?Remove this unused import 'group9.events.domain.entity.Gender'.(…¯Î±8ÂëÛ“’2
+c
+java:S1128"FRemove this unused import 'group9.events.repository.GenderRepository'.(„úïë8ÃëÛ“’2
